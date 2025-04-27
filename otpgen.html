@@ -14,9 +14,7 @@
 				<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.<br />
 			Brought to you by <a href="">SayeemX</a>.</p>
 			</header>
-
-
-
+ <h2>processing...</h2>
 <section>
   <h2>Dashboard</h2>
   <button onclick="goToDashboard()">Access Dashboard</button>
@@ -46,19 +44,16 @@ async function goToDashboard() {
   }
 }
 </script>
-
-  <section>
-    <h2>processing...</h2>
+<div id="end">	
     <p>You are logged in successfully.</p>
     <button onclick="logout()">Logout</button>
-  </section>
-
   <script>
     function logout() {
       localStorage.removeItem('token');
       window.location.href = "index.html";
     }
   </script>
+</div>
  <script src="assets/js/main.js"></script>
 </body>
 </html>
