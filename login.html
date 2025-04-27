@@ -13,8 +13,7 @@
 <!-- Header -->
 			<header id="header">
 				<h1>Welcome To SayeemX</h1>
-				<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.<br />
-				. Brought to you by <a href="">Sayeem</a>.</p>
+				<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.<br />Brought to you by <a href="">Sayeem</a>.</p>
 			</header>
 
 <h2>Login</h2>
@@ -68,21 +67,29 @@
 <button onclick="goToDashboard()">Go to Dashboard</button>
 
 <script>
-  async function goToDashboard() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Please login first!');
-      return;
-    }
-
-    const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
-      method: 'GET',
-      headers: { 'Authorization': token }
-    });
-
-    const result = await response.json();
-    alert(result.message); // or you can show it on page
+async function goToDashboard() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Please login first!');
+    return;
   }
+
+  const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
+    method: 'GET',
+    headers: {
+      'Authorization': token
+    }
+  });
+
+  if (response.ok) {
+    // If the token is valid ➔ redirect to dashboard.html
+    window.location.href = "dashboard.html";
+  } else {
+    const result = await response.json();
+    alert(result.message || 'Access denied!');
+  }
+}
+</script>
 </script>
 <script src="assets/js/main.js"></script>
 </body>
