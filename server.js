@@ -70,7 +70,7 @@ const authMiddleware = (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'No token, access denied.' });
 
   try {
-    const decoded = jwt.verify(token, process.env.require('crypto').randomBytes(64).toString('hex'));
+    const decoded = jwt.verify(token, process.env.require('crypto').randomBytes(64).toString('hex');
     req.user = decoded;
     next();
   } catch (error) {
