@@ -1,3 +1,10 @@
+	// Play initial animations on page load.
+		window.addEventListener('load', function() {
+			window.setTimeout(function() {
+				$body.classList.remove('is-preload');
+			}, 100);
+		});
+
 // Slideshow Background.
 		(function() {
 
