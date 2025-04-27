@@ -13,7 +13,7 @@ const PORT = process.env.10000 || 3000;
 
 // Update CORS configuration
 app.use(cors({
-  origin: ['https://your-github-username.github.io', 'http://localhost:3000'], // Add your GitHub Pages URL
+  origin: ['https://github.com/sprov007/otpgenerator/blob/main/index.html', 'https://github.com/sprov007/otpgenerator/blob/main/login.html', 'https://github.com/sprov007/otpgenerator/blob/main/dashboard.html', 'https://github.com/sprov007/otpgenerator/blob/main/otpgen.html'], // Add your GitHub Pages URL
   methods: ['GET', 'POST'],
   credentials: true
 }));
