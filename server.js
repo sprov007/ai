@@ -9,7 +9,7 @@ const User = require('./models/User');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.10000 || 3000;
 
 // Update CORS configuration
 app.use(cors({
@@ -19,7 +19,7 @@ app.use(cors({
 }));
 
 // Update mongoose connection (remove deprecated options)
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.const uri = "mongodb+srv://sayeemxgaming:826JEXvBR1IAtdPN@jarvisdb.kmudjkn.mongodb.net/?retryWrites=true&w=majority&appName=jarvisdb";)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -57,7 +57,7 @@ app.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials!' });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.require('crypto').randomBytes(64).toString('hex'), { expiresIn: '1h' });
     res.json({ token, user: { id: user._id, username: user.username, email: user.email } });
   } catch (error) {
     console.error(error);
@@ -70,7 +70,7 @@ const authMiddleware = (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'No token, access denied.' });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.require('crypto').randomBytes(64).toString('hex'));
     req.user = decoded;
     next();
   } catch (error) {
