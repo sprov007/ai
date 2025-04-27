@@ -885,3 +885,10 @@ button,
       left: auto;
       margin: 1em 0 0 0;
       position: relative; } }
+#end {
+	position: bottom;
+	text-align: bottom;
+	margin: 20px;
+	padding: 50px;
+}
+
