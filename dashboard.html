@@ -49,13 +49,16 @@
 	<ul>NID Call List</ul>
     <button onclick="logout()">Logout</button>
   </section>
-    <p>You are logged in successfully.</p>
+
+<div textalign= "bottom">
+<p>You are logged in successfully.</p>
   <script>
     function logout() {
       localStorage.removeItem('token');
       window.location.href = "index.html";
     }
   </script>
- <script src="assets/js/main.js"></script>
+</div>
+	<script src="assets/js/main.js"></script>
 </body>
 </html>
