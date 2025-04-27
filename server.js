@@ -19,7 +19,10 @@ app.use(cors({
 }));
 
 // Update mongoose connection (remove deprecated options)
-mongoose.connect(process.env.const uri = "mongodb+srv://sayeemxgaming:826JEXvBR1IAtdPN@jarvisdb.kmudjkn.mongodb.net/?retryWrites=true&w=majority&appName=jarvisdb";)
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
