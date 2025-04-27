@@ -11,15 +11,17 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+// Update CORS configuration
+app.use(cors({
+  origin: ['https://your-github-username.github.io', 'http://localhost:3000'], // Add your GitHub Pages URL
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+// Update mongoose connection (remove deprecated options)
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 app.post('/register', async (req, res) => {
   try {
@@ -76,8 +78,12 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-app.get('/dashboard', authMiddleware, (req, res) => {
-  res.json({ message: `Welcome to your dashboard, user ID: ${req.user.id}` });
+// Update dashboard route to include user info
+app.get('/dashboard', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json({ message: `Welcome ${user.username}`, user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error!' });
+  }
 });
-
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
