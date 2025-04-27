@@ -9,7 +9,7 @@ const User = require('./models/User');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 // Update CORS configuration
 app.use(cors({
