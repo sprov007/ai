@@ -886,7 +886,7 @@ button,
       margin: 1em 0 0 0;
       position: relative; } }
 #end {
-	position: bottom;
+	position: right;
 	text-align: right;
 	margin: 20px;
 	padding: 10px;
