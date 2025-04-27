@@ -887,7 +887,7 @@ button,
       position: relative; } }
 #end {
 	position: bottom;
-	text-align: bottom;
+	text-align: right;
 	margin: 20px;
 	padding: 10px;
 }
