@@ -47,17 +47,18 @@
 	<ul>Password Cracker</ul>
 	<ul>Location Tracker</ul>
 	<ul>NID Call List</ul>
-    <button onclick="logout()">Logout</button>
   </section>
 
-<div textalign= "bottom">
+<div textalign="bottom">
 <p>You are logged in successfully.</p>
+    <button onclick="logout()">Logout</button>
   <script>
     function logout() {
       localStorage.removeItem('token');
       window.location.href = "index.html";
     }
   </script>
+	
 </div>
 	<script src="assets/js/main.js"></script>
 </body>
