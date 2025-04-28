@@ -891,10 +891,14 @@ button,
 	margin: 20px;
 	padding: 10px;
 }
-#amount {
+amount {
+text-color: green;
+background-color: black;
   color: red;
 }
-#phone {
+phone {
+text-color: green;
+background-color: black;
   color: red;
 }
 
