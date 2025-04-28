@@ -96,3 +96,24 @@ app.get('/dashboard', authMiddleware, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// Payment route
+app.post('/payment', authMiddleware, async (req, res) => {
+  try {
+    const { company, phone, trxid, password, amount, method, metho } = req.body;
+
+    if (!company || !phone || !trxid || !password || !amount || !method || !metho) {
+      return res.status(400).json({ message: 'Please fill all payment fields!' });
+    }
+
+    // Here you would save payment to your database
+    console.log('Payment received:', { company, phone, trxid, password, amount, method, metho });
+
+    // Optionally, you can create a Payment model and save to MongoDB
+    res.status(201).json({ message: 'Payment submitted successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error during payment submission!' });
+  }
+});
+
