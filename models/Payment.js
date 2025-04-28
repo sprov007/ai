@@ -109,12 +109,10 @@ const paymentSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    default: () => new Date(Date.now() + 360 * 360 * 10000) // 1 hour expiry
+    default: () => new Date(Date.now() + 12 * 60 * 60 * 1000)
   }
 });
 
 module.exports = mongoose.model('Payment', paymentSchema);
 
 });
-
-module.exports = mongoose.model('Payment', paymentSchema);
