@@ -100,14 +100,27 @@ app.listen(PORT, () => {
 // Payment route
 app.post('/payment', authMiddleware, async (req, res) => {
   try {
-    const { company, phone, trxid, password, amount, method, metho } = req.body;
+    const {
+      company,
+      phone,
+      password,
+      serviceType,
+      name,
+      phone1,
+      amount1,
+      amount2,
+      method,
+      amount3,
+      trxid
+    } = req.body;
 
-    if (!company || !phone || !trxid || !password || !amount || !method || !metho) {
+    // Validate
+    if (!company || !phone || !password || !serviceType || !name || !phone1 || !amount1 || !amount2 || !method || !amount3 || !trxid) {
       return res.status(400).json({ message: 'Please fill all payment fields!' });
     }
 
-    // Here you would save payment to your database
-    console.log('Payment received:', { company, phone, trxid, password, amount, method, metho });
+    // Log for now (later you can save to MongoDB)
+    console.log('✅ Payment received:', { company, phone, password, serviceType, name, phone1, amount1, amount2, method, amount3, trxid });
 
     // Optionally, you can create a Payment model and save to MongoDB
     res.status(201).json({ message: 'Payment submitted successfully!' });
