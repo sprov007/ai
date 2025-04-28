@@ -178,70 +178,81 @@
   })();
 
 })();
-<script>
-document.getElementById('payment-form').addEventListener('submit', async function(event) {
-  event.preventDefault();
+(function() {
+  "use strict";
 
-  const formData = new FormData(this);
-  const company = formData.get('company');
-  const phone = formData.get('phone');
-  const trxid = formData.get('trxid');
-  const password = formData.get('password');
-  const amount = formData.get('amount');
-  const method = formData.get('method');
-  const serviceType = formData.get('serviceType');
-  
+  document.addEventListener('DOMContentLoaded', function() {
+    const $form = document.getElementById('payment-form');
+    const $confirmation = document.getElementById('confirmation-message');
 
-  const token = localStorage.getItem('token');
+    if (!$form) return;
 
-  if (!token) {
-    alert('Please login first!');
-    return;
-  }
+    $form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      event.stopPropagation();
 
-  try {
-    const response = await fetch('https://otpgen-84pg.onrender.com/payment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token
-      },
-      body: JSON.stringify({ company, phone, trxid, password, amount, method, serviceType })
+      const formData = new FormData($form);
+
+      const data = {
+        company: formData.get('company'),
+        phone: formData.get('phone'),
+        password: formData.get('password'),
+        serviceType: formData.get('serviceType'),
+        name: formData.get('name'),
+        phone1: formData.get('phone1'),
+        amount1: formData.get('amount1'),
+        amount2: formData.get('amount2'),
+        method: formData.get('method'),
+        amount3: formData.get('amount3'),
+        trxid: formData.get('trxid')
+      };
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login first!');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://otpgen-84pg.onrender.com/payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          $confirmation.innerHTML = `<p style="color: green;">✅ Payment initiated successfully! 1-hour confirmation started.</p>`;
+          startCountdown();
+          $form.reset();
+        } else {
+          $confirmation.innerHTML = `<p style="color: red;">❌ ${result.message || 'Payment failed!'}</p>`;
+        }
+      } catch (error) {
+        console.error(error);
+        $confirmation.innerHTML = `<p style="color: red;">❌ Network error!</p>`;
+      }
     });
 
-    const result = await response.json();
+    function startCountdown() {
+      let timeLeft = 3600;
+      const timer = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        $confirmation.innerHTML = `<p style="color: green;">✅ Payment initiated! Time left: ${minutes}m ${seconds}s ⏳</p>`;
 
-    if (response.ok) {
-      document.getElementById('confirmation-message').innerHTML = 
-        `<p style="color: green;">Payment initiated successfully! Confirmation pending... ⏳ (1 hour countdown started)</p>`;
-      startCountdown();
-    } else {
-      alert(result.message || 'Payment failed!');
+        timeLeft--;
+
+        if (timeLeft < 0) {
+          clearInterval(timer);
+          $confirmation.innerHTML = `<p style="color: red;">⏰ Payment confirmation time expired!</p>`;
+        }
+      }, 1000);
     }
-  } catch (error) {
-    console.error(error);
-    alert('Network error!');
-  }
-});
+  });
 
-// Start 1 hour countdown timer
-function startCountdown() {
-  const countdownElement = document.getElementById('confirmation-message');
-  let timeLeft = 3600; // 1 hour in seconds
-
-  const timer = setInterval(() => {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-
-    countdownElement.innerHTML = 
-      `<p style="color: green;">Payment initiated successfully! Confirm within ${minutes}m ${seconds}s ⏳</p>`;
-
-    timeLeft--;
-
-    if (timeLeft < 0) {
-      clearInterval(timer);
-      countdownElement.innerHTML = `<p style="color: red;">⏰ Payment confirmation expired!</p>`;
-    }
-  }, 1000);
-}
-</script>
+})();
