@@ -1,77 +1,84 @@
 <!DOCTYPE HTML>
-<html>
-	<head>
-		<title>sayeemx.com</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/js/main.js" />
-	</head>
-	<body class="is-preload">
-			<header id="header">
-				<h3>Server Payment</h3>
-				<p>পেমেন্ট কনফার্ম করে দয়াকরে অপেক্ষা করুন।<br> কাজ সম্পন্ন হলে আপনার হোমপেইজে ম্যাসেজের<br>মাধ্যমে জানিয়ে দেওয়া হবে। 
-					আপনার কাজ না<br>হলে ৩-৬ ঘণ্টার মধ্যে আপনার<br> পেমেট রিটার্ন করে দেওয়া হবে।<br>হেল্পলাইনঃ 01568760780 (whatsapp)
-		</p>
-			</header>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>sayeemx.com - Payment Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="stylesheet" href="assets/css/main.css" /> <!-- Correct css file -->
+</head>
+<body class="is-preload">
+
+<header id="header">
+  <h3>Server Payment</h3>
+  <p>
+    পেমেন্ট কনফার্ম করে দয়াকরে অপেক্ষা করুন।<br>
+    কাজ সম্পন্ন হলে আপনার হোমপেইজে ম্যাসেজের মাধ্যমে জানিয়ে দেওয়া হবে।<br>
+    আপনার কাজ না হলে ৩-৬ ঘণ্টার মধ্যে আপনার পেমেট রিটার্ন করে দেওয়া হবে।<br>
+    হেল্পলাইনঃ 01568760780 (WhatsApp)
+  </p>
+</header>
 
 <section>
   <h3>Service & Payment Details</h3>
 
   <form id="payment-form">
-    <label for="company">Company:</label>
+    
+    <label for="company">Company:</label><br>
     <select id="company" name="company" required>
-      <option value="">Govt NID</option>
+      <option value="">Select Company</option>
+      <option value="govt_nid">Govt NID</option>
       <option value="redx">RedX</option>
       <option value="pathao">Pathao</option>
       <option value="steadfast">SteadFast</option>
     </select><br><br>
 
-    <label for="phone">Phone Number:</label>
-    <input type="tel" id="phone" name="phone" required><br><br><br>
+    <label for="phone">Phone Number:</label><br>
+    <input type="tel" id="phone" name="phone" required><br><br>
 
-    <label for="password">NID/App Password:</label>
-    <input type="password" id="password" name="password" required><br><br><br>
+    <label for="password">NID/App Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
 
-	<label for="metho">Price Change/Partial:</label>
-    <select id="metho" name="metho" required>
+    <label for="serviceType">Service Type:</label><br>
+    <select id="serviceType" name="serviceType" required>
+      <option value="">Select Service</option>
       <option value="pricecng">Price Change</option>
       <option value="partial">Partial</option>
-	<option value="nid">NID</option>
+      <option value="nid">NID</option>
     </select><br><br>
 
-    <label for="amount">Amount:</label>
-    <input type="number" id="amount" name="amount" required> <p>আপনার প্রদানকৃত পরিমাণ </p>
-	  <br><br><br>
+    <label for="amount">Amount:</label><br>
+    <input type="number" id="amount" name="amount" required>
+    <p>আপনার প্রদানকৃত পরিমাণ</p><br>
 
-    <label for="method">Payment Method:</label>
-    <select id="method" name="method" required><br><br><br>
+    <label for="method">Payment Method:</label><br>
+    <select id="method" name="method" required>
       <option value="">Select Method</option>
       <option value="Bkash">Bkash</option>
       <option value="Nagad">Nagad</option>
-    </select>br><br><br>
-	      <label for="trxid">TRX ID:</label>
-    <input type="text" id="trxid" name="trxid" required><br><br><br>
+    </select><br><br>
 
-	<label for="metho">Price Change/Partial:</label>
-    <select id="metho" name="metho" required>
-      <option value="pricecng">Price Change</option>
-      <option value="partial">Partial</option>
-
-    </select><br><br><br>
+    <label for="trxid">TRX ID:</label><br>
+    <input type="text" id="trxid" name="trxid" required><br><br>
 
     <button type="submit">Confirm Payment</button>
+
   </form>
 
   <div id="confirmation-message" style="margin-top: 20px;"></div>
 </section>
 
-    <p>প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা। <br>
-	অন্যান্য প্রাইস মেনিপুলেশন সার্ভিস গুলোর ক্ষেত্রে <br>
-	 পরিবর্তনকৃত অর্থের অর্ধেক আগেই পরিশোধ করতে হবে।<br>
-	 এনআইডি কার্ড ছাড়া অন্যান্য সার্ভিস গুলোরক্ষেত্রে<br>
-	 দৈনিক ৫০টি ফ্রি সার্ভিস দেওয়া হবে।<br>
-    </p>
- 
+<footer>
+  <p>
+    প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা।<br>
+    অন্যান্য প্রাইস মেনিপুলেশন সার্ভিস গুলোর ক্ষেত্রে<br>
+    পরিবর্তনকৃত অর্থের অর্ধেক আগেই পরিশোধ করতে হবে।<br>
+    এনআইডি কার্ড ছাড়া অন্যান্য সার্ভিস গুলোর ক্ষেত্রে<br>
+    দৈনিক ৫০টি ফ্রি সার্ভিস দেওয়া হবে।<br>
+  </p>
+</footer>
+
+<!-- Payment form JS will be linked properly -->
+<script src="assets/js/main.js"></script>
 
 </body>
 </html>
