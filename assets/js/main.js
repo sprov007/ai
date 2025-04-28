@@ -189,7 +189,7 @@ document.getElementById('payment-form').addEventListener('submit', async functio
   const password = formData.get('password');
   const amount = formData.get('amount');
   const method = formData.get('method');
-  const metho = formData.get('metho');
+  const serviceType = formData.get('serviceType');
   
 
   const token = localStorage.getItem('token');
@@ -206,7 +206,7 @@ document.getElementById('payment-form').addEventListener('submit', async functio
         'Content-Type': 'application/json',
         'Authorization': token
       },
-      body: JSON.stringify({ company, phone, trxid, password, amount, method, metho })
+      body: JSON.stringify({ company, phone, trxid, password, amount, method, serviceType })
     });
 
     const result = await response.json();
