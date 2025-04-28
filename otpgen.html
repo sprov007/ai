@@ -8,8 +8,10 @@
 	</head>
 	<body class="is-preload">
 			<header id="header">
-				<h1>Welcome To OTPGEN</h1>
-				<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.</p>
+				<h1>Server Payment</h1>
+				<p>পেমেন্ট কনফার্ম করে দয়াকরে অপেক্ষা করুন। কাজ সম্পন্ন হলে আপনার হোমপেইজে ম্যাসেজের মাধ্যমে জানিয়ে দেওয়া হবে। <br><br>
+					আপনার কাজ না হলে ৩ ঘণ্টার মধ্যে আপনার পেমেট রিটার্ন করে দেওয়া হবে। হেল্পলাইনঃ ০১১১১১১১১১১
+		</p>
 			</header>
 
 <section>
@@ -25,29 +27,29 @@
     </select><br><br>
 
     <label for="phone">Phone Number:</label>
-    <input type="tel" id="phone" name="phone" required><br><br>
-
-    <label for="trxid">TRX ID:</label>
-    <input type="text" id="trxid" name="trxid" required><br><br>
+    <input type="tel" id="phone" name="phone" required><br><br><br>
 
     <label for="password">NID/App Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
+    <input type="password" id="password" name="password" required><br><br><br>
 
     <label for="amount">Amount:</label>
-    <input type="number" id="amount" name="amount" required><br><br>
+    <input type="number" id="amount" name="amount" required><br><br><br>
 
     <label for="method">Payment Method:</label>
     <select id="method" name="method" required>
       <option value="">Select Method</option>
       <option value="Bkash">Bkash</option>
       <option value="Nagad">Nagad</option>
+    </select>
+	      <label for="trxid">TRX ID:</label>
+    <input type="text" id="trxid" name="trxid" required><br><br><br>
 
 	<label for="metho">Price Change/Partial:</label>
     <select id="metho" name="metho" required>
       <option value="pricecng">Price Change</option>
       <option value="partial">Partial</option>
 
-    </select><br><br>
+    </select><br><br><br>
 
     <button type="submit">Confirm Payment</button>
   </form>
