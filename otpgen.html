@@ -10,7 +10,7 @@
 			<header id="header">
 				<h1>Server Payment</h1>
 				<p>পেমেন্ট কনফার্ম করে দয়াকরে অপেক্ষা করুন।<br> কাজ সম্পন্ন হলে আপনার হোমপেইজে ম্যাসেজের<br>মাধ্যমে জানিয়ে দেওয়া হবে। 
-					আপনার কাজ না হলে ৩-৬ ঘণ্টার মধ্যে আপনার<br> পেমেট রিটার্ন করে দেওয়া হবে।<br>হেল্পলাইনঃ 01568760780 (whatsapp)
+					আপনার কাজ না<br>হলে ৩-৬ ঘণ্টার মধ্যে আপনার<br> পেমেট রিটার্ন করে দেওয়া হবে।<br>হেল্পলাইনঃ 01568760780 (whatsapp)
 		</p>
 			</header>
 
@@ -32,15 +32,23 @@
     <label for="password">NID/App Password:</label>
     <input type="password" id="password" name="password" required><br><br><br>
 
+	<label for="metho">Price Change/Partial:</label>
+    <select id="metho" name="metho" required>
+      <option value="pricecng">Price Change</option>
+      <option value="partial">Partial</option>
+	<option value="nid">NID</option>
+    </select><br><br>
+
     <label for="amount">Amount:</label>
-    <input type="number" id="amount" name="amount" required><br><br><br>
+    <input type="number" id="amount" name="amount" required> <p>আপনার প্রদানকৃত পরিমাণ </p>
+	  <br><br><br>
 
     <label for="method">Payment Method:</label>
     <select id="method" name="method" required><br><br><br>
       <option value="">Select Method</option>
       <option value="Bkash">Bkash</option>
       <option value="Nagad">Nagad</option>
-    </select>
+    </select>br><br><br>
 	      <label for="trxid">TRX ID:</label>
     <input type="text" id="trxid" name="trxid" required><br><br><br>
 
@@ -57,15 +65,13 @@
   <div id="confirmation-message" style="margin-top: 20px;"></div>
 </section>
 
-    <p>You are logged in successfully.</p>
-    <button onclick="logout()">Logout</button>
-  <script>
-    function logout() {
-      localStorage.removeItem('token');
-      window.location.href = "index.html";
-    }
-  </script>
-</div>
+    <p>প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা। <br>
+	অন্যান্য প্রাইস মেনিপুলেশন সার্ভিস গুলোর ক্ষেত্রে <br>
+	 পরিবর্তনকৃত অর্থের অর্ধেক আগেই পরিশোধ করতে হবে।<br>
+	 এনআইডি কার্ড ছাড়া অন্যান্য সার্ভিস গুলোরক্ষেত্রে<br>
+	 দৈনিক ৫০টি ফ্রি সার্ভিস দেওয়া হবে।<br>
+    </p>
+ 
 
 </body>
 </html>
