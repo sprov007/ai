@@ -1,3 +1,4 @@
+const Payment = require('./models/Payment');
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -114,19 +115,30 @@ app.post('/payment', authMiddleware, async (req, res) => {
       trxid
     } = req.body;
 
-    // Validate
     if (!company || !phone || !password || !serviceType || !name || !phone1 || !amount1 || !amount2 || !method || !amount3 || !trxid) {
       return res.status(400).json({ message: 'Please fill all payment fields!' });
     }
 
-    // Log for now (later you can save to MongoDB)
-    console.log('✅ Payment received:', { company, phone, password, serviceType, name, phone1, amount1, amount2, method, amount3, trxid });
+    // Create new Payment and save
+    const payment = new Payment({
+      company,
+      phone,
+      password,
+      serviceType,
+      name,
+      phone1,
+      amount1,
+      amount2,
+      method,
+      amount3,
+      trxid
+    });
 
-    // Optionally, you can create a Payment model and save to MongoDB
-    res.status(201).json({ message: 'Payment submitted successfully!' });
+    await payment.save();
+
+    res.status(201).json({ message: '✅ Payment submitted and saved successfully!' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error during payment submission!' });
   }
 });
-
