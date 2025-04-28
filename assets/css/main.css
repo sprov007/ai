@@ -892,14 +892,10 @@ button,
 	padding: 10px;
 }
 #amount {
-text-color: green;
-background-color: black;
-  color: red;
+  color: black;
 }
 #phone {
-text-color: green;
-background-color: black;
-  color: red;
+  color: black;
 }
 
 
