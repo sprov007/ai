@@ -4,15 +4,12 @@
 		<title>sayeemx.com</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="" />
 	</head>
 	<body class="is-preload">
-
-		<!-- Header -->
 			<header id="header">
 				<h1>Welcome To OTPGEN</h1>
-				<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.<br />
-			Brought to you by <a href="">SayeemX</a>.</p>
+				<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.</p>
 			</header>
 
 <section>
@@ -58,39 +55,6 @@
   <div id="confirmation-message" style="margin-top: 20px;"></div>
 </section>
 
-
-		
-		
-<section>
-  <h2>Dashboard</h2>
-  <button onclick="goToDashboard()">Access Dashboard</button>
-</section>
-
-<script>
-async function goToDashboard() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Please login first!');
-    return;
-  }
-
-  const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
-    method: 'GET',
-    headers: {
-      'Authorization': token
-    }
-  });
-
-  if (response.ok) {
-    // If the token is valid ➔ redirect to dashboard.html
-    window.location.href = "dashboard.html";
-  } else {
-    const result = await response.json();
-    alert(result.message || 'Access denied!');
-  }
-}
-</script>
-<div id="end">	
     <p>You are logged in successfully.</p>
     <button onclick="logout()">Logout</button>
   <script>
@@ -100,6 +64,6 @@ async function goToDashboard() {
     }
   </script>
 </div>
- <script src="assets/js/main.js"></script>
+
 </body>
 </html>
