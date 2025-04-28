@@ -892,10 +892,10 @@ button,
 	margin: 20px;
 	padding: 10px;
 }
-#amount {
+#amount, amount1, amount2 {
   color: black;
 }
-#phone {
+#phone, phone1, phone2 {
   color: black;
 }
 
