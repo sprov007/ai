@@ -891,4 +891,12 @@ button,
 	margin: 20px;
 	padding: 10px;
 }
+#amount {
+  color: red;
+}
+#phone {
+  color: red;
+}
+
+
 
