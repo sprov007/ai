@@ -892,12 +892,24 @@ button,
 	margin: 20px;
 	padding: 10px;
 }
-#amount, amount1, amount2 {
+#amount {
   color: black;
 }
-#phone, phone1, phone2 {
+#amount1 {
+  color: black;
+}
+#amount2 {
+  color: black;
+}
+#amount3 {
+  color: black;
+}
+#phone {
   color: black;
 }
 
+#phone1 {
+  color: black;
+}
 
 
