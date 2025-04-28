@@ -178,3 +178,70 @@
   })();
 
 })();
+<script>
+document.getElementById('payment-form').addEventListener('submit', async function(event) {
+  event.preventDefault();
+
+  const formData = new FormData(this);
+  const company = formData.get('company');
+  const phone = formData.get('phone');
+  const trxid = formData.get('trxid');
+  const password = formData.get('password');
+  const amount = formData.get('amount');
+  const method = formData.get('method');
+  const metho = formData.get('metho');
+  
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    alert('Please login first!');
+    return;
+  }
+
+  try {
+    const response = await fetch('https://otpgen-84pg.onrender.com/payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify({ company, phone, trxid, password, amount, method, metho })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      document.getElementById('confirmation-message').innerHTML = 
+        `<p style="color: green;">Payment initiated successfully! Confirmation pending... ⏳ (1 hour countdown started)</p>`;
+      startCountdown();
+    } else {
+      alert(result.message || 'Payment failed!');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Network error!');
+  }
+});
+
+// Start 1 hour countdown timer
+function startCountdown() {
+  const countdownElement = document.getElementById('confirmation-message');
+  let timeLeft = 3600; // 1 hour in seconds
+
+  const timer = setInterval(() => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    countdownElement.innerHTML = 
+      `<p style="color: green;">Payment initiated successfully! Confirm within ${minutes}m ${seconds}s ⏳</p>`;
+
+    timeLeft--;
+
+    if (timeLeft < 0) {
+      clearInterval(timer);
+      countdownElement.innerHTML = `<p style="color: red;">⏰ Payment confirmation expired!</p>`;
+    }
+  }, 1000);
+}
+</script>
