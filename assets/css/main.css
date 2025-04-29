@@ -935,3 +935,10 @@ input[type="tel"] {
 .success-box { background: #dfd; border-color: #4CAF50; }
 .form-actions { display: flex; gap: 1rem; margin-top: 2rem; }
 .secondary { background: #f0f0f0; color: #333; }
+#bg {
+  z-index: 1 !important; 
+}
+#header, section, footer {
+  position: relative;
+  z-index: 2;
+}
