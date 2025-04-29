@@ -172,3 +172,44 @@
   });
 
 })();
+
+// Background Slideshow Initialization
+(function() {
+  var settings = {
+    images: {
+      'images/bg01.jpg': 'center',
+      'images/bg02.jpg': 'center', 
+      'images/bg03.jpg': 'center'
+    },
+    delay: 6000
+  };
+
+  var pos = 0, lastPos = 0,
+      $wrapper = document.getElementById('bg'),
+      $bgs = [], $bg, k;
+
+  // Create background elements
+  for (k in settings.images) {
+    $bg = document.createElement('div');
+    $bg.style.backgroundImage = 'url("' + k + '")';
+    $bg.style.backgroundPosition = settings.images[k];
+    $wrapper.appendChild($bg);
+    $bgs.push($bg);
+  }
+
+  // Start animation if multiple images
+  if ($bgs.length > 1) {
+    $bgs[pos].classList.add('visible', 'top');
+    
+    window.setInterval(function() {
+      lastPos = pos;
+      pos = (pos + 1) % $bgs.length;
+      
+      $bgs[lastPos].classList.remove('top');
+      $bgs[pos].classList.add('visible', 'top');
+      
+      setTimeout(() => $bgs[lastPos].classList.remove('visible'), 
+                settings.delay / 2);
+    }, settings.delay);
+  }
+})();
