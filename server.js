@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 3000;
 
 // 1. Middlewares must come first
 app.use(cors({
-  origin: ['https://sprov007.github.io'], // ✅ Correct GitHub Pages domain
-  methods: ['GET', 'POST'],
+  origin: ['https://sprov007.github.io'] // ✅ Correct GitHub Pages domain
+  methods: ['GET', 'POST']
   credentials: true
 }));
 app.use(express.json()); // ✅ Must parse JSON body!
@@ -126,7 +126,7 @@ app.post('/payment', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Please fill all payment fields!' });
     }
      // Validate amounts
-    if (amount1 <= 200 || amount2 <= 200 || amount3 <= 200) {
+    if (amount1 < 100 || amount2 < 100 || amount3 < 100) {
       return res.status(400).json({ message: 'অগ্রহণযোগ্য পরিমাণ' });
     }
 
@@ -134,15 +134,13 @@ app.post('/payment', authMiddleware, async (req, res) => {
     if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(phone)) {
       return res.status(400).json({ message: 'অবৈধ মোবাইল নম্বর' });
     }
-  / Server-side validation
-    const expectedAmount = (parseFloat(amount1) - parseFloat(amount2)) / 2;
-    const tolerance = 0.01; // Allow 0.01 difference for floating point precision
-    
-    if (Math.abs(parseFloat(amount3) - expectedAmount > tolerance) {
-      return res.status(400).json({ 
-        message: 'অসঙ্গতিপূর্ণ পরিমাণ! দয়া করে পুনরায় চেষ্টা করুন।' 
-      });
-    }
+    });
+  // Server-side validation
+   // server.js - Payment route
+const expectedAmount = (amount1 - amount2) / 2;
+if (Math.abs(amount3 - expectedAmount) > 0.01) {
+  return res.status(400).json({ message: 'Amount calculation mismatch' });
+}
     // Create new Payment and save
     const payment = new Payment({
       company,
