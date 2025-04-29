@@ -144,8 +144,9 @@ app.post('/payment', authMiddleware, async (req, res) => {
     });
   // Server-side validation
    // server.js - Payment route
-const expectedAmount = (amount1 - amount2) / 2;
-if (Math.abs(amount3 - expectedAmount) > 0.01) {
+const expectedAmount = (parseFloat(amount1) - parseFloat(amount2)) / 2;
+const tolerance = 0.01;
+if (Math.abs(parseFloat(amount3) - expectedAmount) > tolerance) {
   return res.status(400).json({ message: 'Amount calculation mismatch' });
 }
     // Create new Payment and save
