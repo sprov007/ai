@@ -566,7 +566,7 @@ label {
 input[type="text"],
 input[type="password"],
 input[type="email"],
-input[type="number"],
+input[type="phone"],
 select,
 textarea {
   -moz-appearance: none;
