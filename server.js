@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 3000;
 
 // 1. Middlewares must come first
 app.use(cors({
-  origin: ['https://sprov007.github.io'] // ✅ Correct GitHub Pages domain
-  methods: ['GET', 'POST']
+  origin: ['https://sprov007.github.io'], // ✅ Correct GitHub Pages domain
+  methods: ['GET', 'POST'],
   credentials: true
 }));
 app.use(express.json()); // ✅ Must parse JSON body!
