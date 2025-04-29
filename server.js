@@ -58,13 +58,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Add user reference to payment schema
-const paymentSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  // ... rest of your existing fields
-});
-
-
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
