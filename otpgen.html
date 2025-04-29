@@ -89,6 +89,24 @@
     শিকার হলে তার জন্য One1 কোনভাবেই দায়ী নয়।<br>Grate power comes with great responsibility,<br>So use it for ethical perposes only.
   </p>
 </footer>
+<script>
+document.getElementById('payment-form').addEventListener('submit', function(e) {
+  const phone = document.getElementById('phone').value;
+  const amount = document.getElementById('amount1').value;
+
+  if (!validateBDPhone(phone)) {
+    alert('সঠিক বাংলাদেশী মোবাইল নম্বর দিন (01XXXXXXXXX)');
+    e.preventDefault();
+    return;
+  }
+
+  if (!validateAmount(amount)) {
+    alert('অগ্রহণযোগ্য পরিমাণ (১০০ টাকা থেকে ১,০০,০০০ টাকা পর্যন্ত)');
+    e.preventDefault();
+    return;
+  }
+});
+</script>  
 
 <!-- Payment form JS will be linked properly -->
 <script src="./assets/js/main.js"></script>
