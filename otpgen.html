@@ -111,6 +111,26 @@ document.getElementById('payment-form').addEventListener('submit', function(e) {
   }
 });
 </script>  
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize calculation AFTER persistence
+  setTimeout(() => {
+    const amount1 = document.getElementById('amount1');
+    const amount2 = document.getElementById('amount2');
+    const amount3 = document.getElementById('amount3');
+
+    function calculate() {
+      const val1 = parseFloat(amount1.value) || 0;
+      const val2 = parseFloat(amount2.value) || 0;
+      amount3.value = ((val1 - val2) / 2).toFixed(2);
+    }
+
+    amount1.addEventListener('input', calculate);
+    amount2.addEventListener('input', calculate);
+    calculate(); // Initial calculation
+  }, 100);
+});
+</script>
 
 <!-- Payment form JS will be linked properly -->
 <script src="./assets/js/main.js"></script>
