@@ -66,7 +66,7 @@
       <option value="Nagad">Nagad</option>
     </select><br><br>
  <label for="amount3">Server Charge:</label>
-    <input type="number" id="amount3" name="amount3" readonly>
+<input type="number" id="amount3" name="amount3" readonly required>
     <p>পরিবর্তীত মূল্যের ৫০%(অর্ধেক পরিমাণ) প্রদত্ত বিকাশ নাম্বারে অগ্রিম পরিশোধ করুন</p>
     
     <label for="trxid">TRX ID:</label>
@@ -108,7 +108,6 @@ document.getElementById('payment-form').addEventListener('submit', function(e) {
 });
 </script>  
 <script>
-// Add this script at the end of the file before </body>
 document.addEventListener('DOMContentLoaded', () => {
   const amount1 = document.getElementById('amount1');
   const amount2 = document.getElementById('amount2');
@@ -117,10 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function calculateAmount3() {
     const value1 = parseFloat(amount1.value) || 0;
     const value2 = parseFloat(amount2.value) || 0;
-    amount3.value = (value1 - value2).toFixed(2);
+    
+    // New calculation formula
+    const calculatedValue = (value1 - value2) / 2;
+    
+    // Update amount3 with 2 decimal places
+    amount3.value = calculatedValue.toFixed(2);
+    
+    // Validate minimum value
+    if (calculatedValue < 0) {
+      amount3.value = '0.00';
+    }
   }
 
-  // Calculate on any input change
+  // Add event listeners
   amount1.addEventListener('input', calculateAmount3);
   amount2.addEventListener('input', calculateAmount3);
   
@@ -128,7 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
   calculateAmount3();
 });
 </script>
-
 <!-- Payment form JS will be linked properly -->
 <script src="./assets/js/main.js"></script>
 
