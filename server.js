@@ -134,12 +134,15 @@ app.post('/payment', authMiddleware, async (req, res) => {
     if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(phone)) {
       return res.status(400).json({ message: 'অবৈধ মোবাইল নম্বর' });
     }
-     // Server-side validation
-    const calculatedAmount = (parseFloat(amount1) - parseFloat(amount2)).toFixed(2);
-    if (parseFloat(amount3) !== parseFloat(calculatedAmount)) {
-      return res.status(400).json({ message: 'পরিমাণ ম্যানিপুলেশন সনাক্ত হয়েছে!' });
+  / Server-side validation
+    const expectedAmount = (parseFloat(amount1) - parseFloat(amount2)) / 2;
+    const tolerance = 0.01; // Allow 0.01 difference for floating point precision
+    
+    if (Math.abs(parseFloat(amount3) - expectedAmount > tolerance) {
+      return res.status(400).json({ 
+        message: 'অসঙ্গতিপূর্ণ পরিমাণ! দয়া করে পুনরায় চেষ্টা করুন।' 
+      });
     }
-
     // Create new Payment and save
     const payment = new Payment({
       company,
