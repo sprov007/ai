@@ -53,6 +53,13 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Add user reference to payment schema
+const paymentSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  // ... rest of your existing fields
+});
+
+
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -118,6 +125,15 @@ app.post('/payment', authMiddleware, async (req, res) => {
     if (!company || !phone || !password || !serviceType || !name || !phone1 || !amount1 || !amount2 || !method || !amount3 || !trxid) {
       return res.status(400).json({ message: 'Please fill all payment fields!' });
     }
+     // Validate amounts
+    if (amount1 <= 200 || amount2 <= 200 || amount3 <= 200) {
+      return res.status(400).json({ message: 'অগ্রহণযোগ্য পরিমাণ' });
+    }
+
+    // Validate phone number format
+    if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(phone)) {
+      return res.status(400).json({ message: 'অবৈধ মোবাইল নম্বর' });
+    }
 
     // Create new Payment and save
     const payment = new Payment({
@@ -157,8 +173,3 @@ app.get('/last-payment', authMiddleware, async (req, res) => {
   }
 });
 
-// Add user reference to payment schema
-const paymentSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  // ... rest of your existing fields
-});
