@@ -256,3 +256,12 @@
   });
 
 })();
+// Phone number validation
+function validateBDPhone(number) {
+  return /^(?:\+?88)?01[3-9]\d{8}$/.test(number);
+}
+
+// Amount validation
+function validateAmount(amount) {
+  return amount >= 100 && amount <= 100000;
+}
