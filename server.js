@@ -142,3 +142,23 @@ app.post('/payment', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server Error during payment submission!' });
   }
 });
+// Get last payment
+app.get('/last-payment', authMiddleware, async (req, res) => {
+  try {
+    const payment = await Payment.findOne({ user: req.user.id })
+      .sort({ createdAt: -1 })
+      .select('-password -__v');
+
+    if (!payment) return res.status(404).json({ message: 'No payments found' });
+
+    res.json(payment);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// Add user reference to payment schema
+const paymentSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  // ... rest of your existing fields
+});
