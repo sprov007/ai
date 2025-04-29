@@ -111,36 +111,6 @@ document.getElementById('payment-form').addEventListener('submit', function(e) {
   }
 });
 </script>  
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const amount1 = document.getElementById('amount1');
-  const amount2 = document.getElementById('amount2');
-  const amount3 = document.getElementById('amount3');
-
-  function calculateAmount3() {
-    const value1 = parseFloat(amount1.value) || 0;
-    const value2 = parseFloat(amount2.value) || 0;
-    
-    // New calculation formula
-    const calculatedValue = (value1 - value2) / 2;
-    
-    // Update amount3 with 2 decimal places
-    amount3.value = calculatedValue.toFixed(2);
-    
-    // Validate minimum value
-    if (calculatedValue < 0) {
-      amount3.value = '0.00';
-    }
-  }
-
-  // Add event listeners
-  amount1.addEventListener('input', calculateAmount3);
-  amount2.addEventListener('input', calculateAmount3);
-  
-  // Initial calculation
-  calculateAmount3();
-});
-</script>
 
 <!-- Payment form JS will be linked properly -->
 <script src="./assets/js/main.js"></script>
