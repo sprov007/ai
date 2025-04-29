@@ -19,6 +19,11 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json()); // ✅ Must parse JSON body!
+// server.js
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 // 2. MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI, {
@@ -134,6 +139,8 @@ app.post('/payment', authMiddleware, async (req, res) => {
     if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(phone)) {
       return res.status(400).json({ message: 'অবৈধ মোবাইল নম্বর' });
     }
+    // server.js - Payment route
+        const sanitizedPhone = phone.replace(/[^\d+]/g, '');
     });
   // Server-side validation
    // server.js - Payment route
