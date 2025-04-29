@@ -899,5 +899,35 @@ input[type="tel"] {
   color: #ffffff !important; /* White text */
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
+/* Add to existing main.css */
+/* Payment status specific styles */
+#payment-status tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 
+.status-indicator {
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.status-pending {
+  background: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+}
+
+.status-completed {
+  background: rgba(28, 180, 149, 0.1);
+  color: #1cb495;
+}
+
+#countdown {
+  margin-top: 1em;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.countdown-expired {
+  color: #ff4444;
+}
 
