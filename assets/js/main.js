@@ -269,7 +269,7 @@ function validateAmount(amount) {
 (function() {
   const FORM_ID = 'payment-form';
   const STORAGE_KEY = 'formDraft';
-  const EXCLUDE_FIELDS = ['password'];
+  const EXCLUDE_FIELDS = ['password', 'amount3']; // Add amount3 here
 
   // Initialize form persistence
   function initFormPersistence() {
