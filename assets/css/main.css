@@ -894,24 +894,10 @@ button,
 	margin: 20px;
 	padding: 10px;
 }
-#amount {
-  color: black;
-}
-#amount1 {
-  color: black;
-}
-#amount2 {
-  color: black;
-}
-#amount3 {
-  color: black;
-}
-#phone {
-  color: black;
-}
-
-#phone1 {
-  color: black;
+input[type="number"],
+input[type="tel"] {
+  color: #ffffff !important; /* White text */
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 
