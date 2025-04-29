@@ -178,4 +178,14 @@ app.get('/last-payment', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
-
+// Add to server.js
+app.post('/payment/complete/:id', async (req, res) => {
+  try {
+    const payment = await Payment.findById(req.params.id);
+    payment.status = 'Completed';
+    await payment.save();
+    res.json(payment);
+  } catch (error) {
+    // Handle error
+  }
+});
