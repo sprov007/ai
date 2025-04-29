@@ -12,7 +12,11 @@ const paymentSchema = new mongoose.Schema({
   method: { type: String, required: true },
   amount3: { type: Number, required: true },
   trxid: { type: String, required: true },
-  status: { type: String, default: 'Pending' }, // Pending, Confirmed, Expired
+ status: { 
+    type: String, 
+    enum: ['Pending', 'Completed', 'RefundRequested'],
+    default: 'Pending'
+  }
   createdAt: { type: Date, default: Date.now },
   expiresAt: { 
     type: Date,
