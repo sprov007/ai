@@ -141,7 +141,6 @@ app.post('/payment', authMiddleware, async (req, res) => {
     }
     // server.js - Payment route
         const sanitizedPhone = phone.replace(/[^\d+]/g, '');
-    });
   // Server-side validation
    // server.js - Payment route
 const expectedAmount = (parseFloat(amount1) - parseFloat(amount2)) / 2;
