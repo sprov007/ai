@@ -217,9 +217,9 @@
         const response = await fetch('https://otpgen-84pg.onrender.com/payment', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-          },
+  'Content-Type': 'application/json',
+  'Authorization': 'Bearer ' + token // Add 'Bearer ' prefix
+},
           body: JSON.stringify(data)
         });
 
