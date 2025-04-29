@@ -1,189 +1,163 @@
 <!DOCTYPE HTML>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>পেমেন্ট পৃষ্ঠা - OTP Generator</title>
+  <title>Payment Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./assets/css/main.css">
-  <style>
-    .loading-spinner {
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      border: 2px solid currentColor;
-      border-radius: 50%;
-      border-top-color: transparent;
-      animation: spin 0.75s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .error-box {
-      padding: 15px;
-      margin: 20px 0;
-      background: #fee;
-      border: 1px solid #f99;
-      border-radius: 4px;
-      display: none;
-    }
-
-    .visible { display: block !important; }
-    .hidden { display: none !important; }
-  </style>
 </head>
 <body class="is-preload">
-  <header id="header">
-    <h1>সার্ভার পেমেন্ট সিস্টেম</h1>
-    <p>
-      পেমেন্ট কনফার্ম করে দয়াকরে অপেক্ষা করুন।<br>
-      স্ট্যাটাস দেখতে ড্যাশবোর্ড চেক করুন।<br>
-      আপনার কাজ না হলে ৩-৬ ঘণ্টার মধ্যে পেমেন্ট রিটার্ন করা হবে।<br>
-      হেল্পলাইনঃ ০১৫৬৮৭৬০৭৮০ (WhatsApp)
-    </p>
-  </header>
+  <div class="container">
+    <h1 class="page-title">Otp Generator Payment Page</h1>
 
-  <main>
+    <header class="payment-header">
+      <h3>Server Payment</h3>
+      <p class="instruction-text">
+        পেমেন্ট কনফার্ম করে দয়াকরে অপেক্ষা করুন।
+        স্ট্যাটাস দেখতে Dashboard চেক করুন।
+        আপনার কাজ না হলে ৩-৬ ঘণ্টার মধ্যে আপনার পেমেন্ট রিটার্ন করে দেওয়া হবে।
+        হেল্পলাইনঃ 01568760780 (WhatsApp)
+      </p>
+    </header>
+
     <section class="payment-section">
-      <h2>সার্ভিস ও পেমেন্ট বিবরণ</h2>
-      
-      <form id="payment-form">
-        <!-- Company Selection -->
-        <div class="form-group">
-          <label for="company">কোম্পানি:</label>
-          <select id="company" name="company" required>
-            <option value="">কোম্পানি নির্বাচন করুন</option>
-            <option value="govt_nid">গভর্নমেন্ট এনআইডি</option>
-            <option value="redx">রেডএক্স</option>
-            <option value="pathao">পাঠাও</option>
-            <option value="steadfast">স্টেডফাস্ট</option>
-          </select>
-        </div>
+      <h3 class="section-title">Service & Payment Details</h3>
 
-        <!-- Phone and Password -->
+      <form id="payment-form" class="payment-form">
         <div class="form-group">
-          <label for="phone">আপনার মোবাইল নম্বর:</label>
-          <input type="tel" id="phone" name="phone" 
-                 pattern="^(?:\+88)?01[3-9]\d{8}$"
-                 title="০১xxxxxxxxx অথবা +৮৮০১xxxxxxxxx"
-                 required>
-        </div>
-
-        <div class="form-group">
-          <label for="password">এনআইডি/অ্যাপ পাসওয়ার্ড:</label>
-          <input type="password" id="password" name="password" 
-                 minlength="6" required>
-        </div>
-
-        <!-- Service Details -->
-        <div class="form-group">
-          <label for="serviceType">সার্ভিস ধরণ:</label>
-          <select id="serviceType" name="serviceType" required>
-            <option value="">সার্ভিস নির্বাচন করুন</option>
-            <option value="pricecng">মূল্য পরিবর্তন</option>
-            <option value="partial">আংশিক</option>
-            <option value="nid">এনআইডি</option>
+          <label for="company">Company:</label>
+          <select id="company" name="company" class="form-control" required>
+            <option value="">Select Company</option>
+            <option value="govt_nid">Govt NID</option>
+            <option value="redx">RedX</option>
+            <option value="pathao">Pathao</option>
+            <option value="steadfast">SteadFast</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label for="name">গ্রাহকের নাম:</label>
-          <input type="text" id="name" name="name" required>
+          <label for="phone">Your Phone Number:</label>
+          <input type="tel" id="phone" name="phone" class="form-control" required>
         </div>
 
         <div class="form-group">
-          <label for="phone1">গ্রাহকের মোবাইল:</label>
-          <input type="tel" id="phone1" name="phone1" 
-                 pattern="^(?:\+88)?01[3-9]\d{8}$"
-                 title="০১xxxxxxxxx অথবা +৮৮০১xxxxxxxxx"
-                 required>
+          <label for="password">NID/App Password:</label>
+          <input type="password" id="password" name="password" class="form-control" required>
         </div>
 
-        <!-- Amount Fields -->
+        <div class="form-group">
+          <label for="serviceType">Service Type:</label>
+          <select id="serviceType" name="serviceType" class="form-control" required>
+            <option value="">Select Service</option>
+            <option value="pricecng">Price Change</option>
+            <option value="partial">Partial</option>
+            <option value="nid">NID</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="name">NID/Customer Name:</label>
+          <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone1">Customer Phone Number:</label>
+          <input type="tel" id="phone1" name="phone1" class="form-control" required>
+        </div>
+
         <div class="amount-group">
           <div class="form-group">
-            <label for="amount1">প্রারম্ভিক মূল্য:</label>
-            <input type="number" id="amount1" name="amount1" 
-                   step="0.01" min="100" max="100000" required>
-            <small>পণ্যের প্রকৃত মূল্য</small>
+            <label for="amount1">Amount:</label>
+            <input type="number" id="amount1" name="amount1" class="form-control" required>
+            <p class="amount-note">পণ্যের মূল্য</p>
           </div>
 
           <div class="form-group">
-            <label for="amount2">পরিবর্তিত মূল্য:</label>
-            <input type="number" id="amount2" name="amount2" 
-                   step="0.01" min="100" max="100000" required>
-            <small>হালনাগাদকৃত মূল্য</small>
+            <label for="amount2">Updated Amount:</label>
+            <input type="number" id="amount2" name="amount2" class="form-control" required>
+            <p class="amount-note">পরিবর্তিত মূল্য</p>
           </div>
         </div>
 
-        <!-- Payment Method -->
         <div class="form-group">
-          <label for="method">পেমেন্ট মাধ্যম:</label>
-          <select id="method" name="method" required>
-            <option value="">মাধ্যম নির্বাচন করুন</option>
-            <option value="Bkash">বিকাশ</option>
-            <option value="Nagad">নগদ</option>
+          <label for="method">Payment Method:</label>
+          <select id="method" name="method" class="form-control" required>
+            <option value="">Select Method</option>
+            <option value="Bkash">Bkash</option>
+            <option value="Nagad">Nagad</option>
           </select>
         </div>
 
-        <!-- Server Charge -->
         <div class="form-group">
-          <label for="amount3">সার্ভিস চার্জ:</label>
-          <input type="number" id="amount3" name="amount3" 
-                 step="0.01" readonly required>
-          <small>অগ্রিম সার্ভিস চার্জ প্রদান করুন</small>
+          <label for="amount3">Server Charge:</label>
+          <input type="number" id="amount3" name="amount3" class="form-control" readonly required>
+          <p class="amount-note">কার্য সম্পাদনের জন্য সার্ভারচার্জ প্রদত্ত বিকাশ নাম্বারে অগ্রিম পরিশোধ করুন</p>
         </div>
 
-        <!-- TRX ID -->
         <div class="form-group">
-          <label for="trxid">ট্রানজেকশন আইডি:</label>
-          <input type="text" id="trxid" name="trxid" 
-                 minlength="10" required>
+          <label for="trxid">TRX ID:</label>
+          <input type="text" id="trxid" name="trxid" class="form-control" required>
         </div>
 
-        <!-- Form Actions -->
         <div class="form-actions">
-          <button type="submit" id="submitBtn">
-            <span class="btn-text">পেমেন্ট নিশ্চিত করুন</span>
-            <span class="loading-spinner hidden"></span>
-          </button>
-          
-          <button type="button" id="cancelBtn" class="secondary">
-            <i class="fas fa-times"></i> বাতিল করুন
+          <button type="submit" class="btn-primary">Confirm Payment</button>
+          <button type="button" id="cancelBtn" class="btn-secondary">
+            <i class="fas fa-ban"></i> Cancel & Clear
           </button>
         </div>
       </form>
 
-      <!-- Status Messages -->
-      <div id="server-messages">
-        <div id="error-message" class="error-box hidden"></div>
-        <div id="confirmation-message" class="success-box hidden"></div>
-      </div>
+      <div id="confirmation-message" class="confirmation-message"></div>
     </section>
-  </main>
 
-  <footer>
-    <div class="disclaimer">
-      <h3>গুরুত্বপূর্ণ নির্দেশনা:</h3>
-      <ul>
-        <li>এনআইডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০ টাকা</li>
-        <li>অন্যান্য সার্ভিসের ক্ষেত্রে দৈনিক ৫০টি ফ্রি সার্ভিস</li>
-        <li>যেকোনো প্রতারণার জন্য ওয়ান১ দায়ী নয়</li>
-        <li>নৈতিক ব্যবহার নিশ্চিত করুন</li>
-      </ul>
-    </div>
-  </footer>
+    <footer class="payment-footer">
+      <p class="footer-text">
+        প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা।
+        অন্যান্য প্রাইস ম্যানুপুলেশান সার্ভিস গুলোর ক্ষেত্রে
+        সার্ভারচার্জ আগেই পরিশোধ করতে হবে। নতুবা Ai জেনেরাটর চালু করা সম্ভব হবে না।
+        এনআইডি কার্ড ছাড়া অন্যান্য সার্ভিস গুলোর ক্ষেত্রে
+        দৈনিক ৫০টি ফ্রি সার্ভিস দেওয়া হবে এজন্য প্রদত্ত Whatsapp নাম্বারে টেক্সট করুন। প্রদত্ত নাম্বার ছাড়া অন্য কোন নাম্বারে যোগাযোগ করে কোন প্রতারণার
+        শিকার হলে তার জন্য One1 কোনভাবেই দায়ী নয়।<br>Grate power comes with great responsibility,<br>So use it for ethical perposes only.
+      </p>
+    </footer>
+  </div>
 
   <script>
-    // Auto-logout after 55 minutes
-    const logoutTimer = setTimeout(() => {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }, 55 * 60 * 1000);
-  </script>
+    document.getElementById('payment-form').addEventListener('submit', function(e) {
+      const phone = document.getElementById('phone').value;
+      const amount = document.getElementById('amount1').value;
 
+      if (!validateBDPhone(phone)) {
+        alert('সঠিক বাংলাদেশী মোবাইল নম্বর দিন (01XXXXXXXXX)');
+        e.preventDefault();
+        return;
+      }
+
+      if (!validateAmount(amount)) {
+        alert('অগ্রহণযোগ্য পরিমাণ (১০০ টাকা থেকে ১,০০,০০০ টাকা পর্যন্ত)');
+        e.preventDefault();
+        return;
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const amount1 = document.getElementById('amount1');
+        const amount2 = document.getElementById('amount2');
+        const amount3 = document.getElementById('amount3');
+
+        function calculate() {
+          const val1 = parseFloat(amount1.value) || 0;
+          const val2 = parseFloat(amount2.value) || 0;
+          amount3.value = ((val1 - val2) / 2).toFixed(2);
+        }
+
+        amount1.addEventListener('input', calculate);
+        amount2.addEventListener('input', calculate);
+        calculate();
+      }, 100);
+    });
+  </script>
   <script src="./assets/js/main.js"></script>
 </body>
 </html>
