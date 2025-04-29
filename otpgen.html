@@ -73,7 +73,11 @@
     <input type="text" id="trxid" name="trxid" required>
 <br><br><br><br>
     <button type="submit">Confirm Payment</button>
-
+<br><br>
+<!-- Add cancel button in form -->
+<button type="button" id="cancelBtn" class="button">
+  <i class="fas fa-times"></i> Cancel
+</button>
   </form>
 
   <div id="confirmation-message" style="margin-top: 20px;"></div>
@@ -137,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
   calculateAmount3();
 });
 </script>
+
 <!-- Payment form JS will be linked properly -->
 <script src="./assets/js/main.js"></script>
 
