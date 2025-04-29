@@ -1,26 +1,27 @@
 const mongoose = require('mongoose');
 
+// In models/Payment.js
 const paymentSchema = new mongoose.Schema({
-  company: { type: String, required: true },
-  phone: { type: String, required: true },
-  password: { type: String, required: true },
-  serviceType: { type: String, required: true },
-  name: { type: String, required: true },
-  phone1: { type: String, required: true },
-  amount1: { type: Number, required: true },
-  amount2: { type: Number, required: true },
-  method: { type: String, required: true },
-  amount3: { type: Number, required: true },
-  trxid: { type: String, required: true },
- status: { 
-    type: String, 
-    enum: ['Pending', 'Completed', 'RefundRequested'],
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  company: String,
+  phone: String,
+  password: String,
+  serviceType: String,
+  name: String,
+  phone1: String,
+  amount1: Number,
+  amount2: Number,
+  method: String,
+  amount3: Number,
+  trxid: String,
+  status: {
+    type: String,
+    enum: ['Pending', 'Completed', 'Failed'],
     default: 'Pending'
-  }
-  createdAt: { type: Date, default: Date.now },
-  expiresAt: { 
+  },
+  createdAt: {
     type: Date,
-    default: () => new Date(Date.now() + 12 * 60 * 60 * 1000) // ✅ 12 hours expiry
+    default: Date.now
   }
 });
 
