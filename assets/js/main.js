@@ -265,3 +265,99 @@ function validateBDPhone(number) {
 function validateAmount(amount) {
   return amount >= 100 && amount <= 100000;
 }
+// FORM PERSISTENCE MODULE
+(function() {
+  // Configuration
+  const FORM_ID = 'payment-form';
+  const STORAGE_KEY = 'formDraft';
+  const EXCLUDE_FIELDS = ['password']; // Never store sensitive fields
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById(FORM_ID);
+    if (!form) return;
+
+    // Load saved data
+    loadFormData();
+
+    // Set up auto-save
+    form.addEventListener('input', saveFormData);
+    
+    // Clear on submit
+    form.addEventListener('submit', clearFormData);
+    
+    // Cancel button handler
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', handleCancel);
+    }
+  });
+
+  function saveFormData() {
+    const form = document.getElementById(FORM_ID);
+    const data = {};
+    const now = Date.now();
+
+    // Collect form data
+    Array.from(form.elements).forEach(element => {
+      if (shouldStoreElement(element)) {
+        data[element.id] = element.value;
+      }
+    });
+
+    // Add expiration (6 hours)
+    data._meta = {
+      expires: now + (6 * 60 * 60 * 1000),
+      created: now
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function loadFormData() {
+    const rawData = localStorage.getItem(STORAGE_KEY);
+    if (!rawData) return;
+
+    try {
+      const data = JSON.parse(rawData);
+      
+      // Check expiration
+      if (data._meta && data._meta.expires < Date.now()) {
+        clearFormData();
+        return;
+      }
+
+      // Restore values
+      Object.entries(data).forEach(([id, value]) => {
+        if (id === '_meta') return;
+        const element = document.getElementById(id);
+        if (element && shouldStoreElement(element)) {
+          element.value = value;
+        }
+      });
+
+    } catch (e) {
+      console.error('Failed to load form data:', e);
+      clearFormData();
+    }
+  }
+
+  function clearFormData() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
+  function handleCancel() {
+    if (confirm('Cancel and clear unsaved data?')) {
+      clearFormData();
+      document.getElementById(FORM_ID).reset();
+    }
+  }
+
+  function shouldStoreElement(element) {
+    return element.id && 
+           !EXCLUDE_FIELDS.includes(element.id) &&
+           (element.tagName === 'INPUT' || 
+            element.tagName === 'SELECT' || 
+            element.tagName === 'TEXTAREA');
+  }
+})();
