@@ -1,89 +1,159 @@
-const Payment = require('./models/Payment');
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const dotenv = require('dotenv');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const Payment = require('./models/Payment');
 const User = require('./models/User');
 
-dotenv.config();
-
+// Initialize Express
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
+// ======================
+// Security Middlewares
+// ======================
+app.use(helmet());
 app.use(cors({
-  origin: ['https://sprov007.github.io', 'http://localhost:3000'],
+  origin: [
+    'https://sprov007.github.io',
+    'http://localhost:3000',
+    process.env.PRODUCTION_URL
+  ],
   methods: ['GET', 'POST'],
   credentials: true
 }));
-app.use(express.json());
 
+app.use(express.json({ limit: '10kb' }));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
+// ======================
 // Database Connection
+// ======================
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  poolSize: 10,
+  serverSelectionTimeoutMS: 5000,
+  autoIndex: process.env.NODE_ENV === 'development'
 })
-.then(() => console.log('✅ MongoDB Connected'))
+.then(() => console.log('✅ MongoDB connected successfully'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
+// ======================
 // Authentication Middleware
-const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) return res.status(401).json({ message: 'Authentication required' });
-
+// ======================
+const authMiddleware = async (req, res, next) => {
   try {
+    const authHeader = req.header('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Authorization header missing or invalid'
+      });
+    }
+
+    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
-    res.status(400).json({ message: 'Invalid token' });
+    console.error('Authentication Error:', error);
+    res.status(401).json({
+      success: false,
+      message: error.expiredAt ? 'Session expired' : 'Invalid token'
+    });
   }
 };
 
+// ======================
 // Routes
+// ======================
+
+// User Registration
 app.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    
+
+    // Validation
     if (!username || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required'
+      });
     }
 
+    // Check existing user
     if (await User.findOne({ email })) {
-      return res.status(400).json({ message: 'Email already registered' });
+      return res.status(409).json({
+        success: false,
+        message: 'Email already registered'
+      });
     }
 
+    // Create user
     const user = new User({
       username,
       email,
-      password: await bcrypt.hash(password, 10)
+      password: await bcrypt.hash(password, 12)
     });
 
     await user.save();
-    res.status(201).json({ message: 'Registration successful' });
-    
+
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful'
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Registration Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during registration'
+    });
   }
 });
 
+// User Login
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { 
-      expiresIn: '1h' 
-    });
-    
+    // Generate JWT
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     res.json({
+      success: true,
       token,
       user: {
         id: user._id,
@@ -93,22 +163,15 @@ app.post('/login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Login Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during login'
+    });
   }
 });
 
-app.get('/dashboard', authMiddleware, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json({ message: `Welcome ${user.username}`, user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Payment Routes
+// Payment Processing
 app.post('/payment', authMiddleware, async (req, res) => {
   try {
     const { 
@@ -125,77 +188,113 @@ app.post('/payment', authMiddleware, async (req, res) => {
       trxid
     } = req.body;
 
-    // Validation
-    if (!company || !phone || !password || !serviceType || !name || 
-        !phone1 || !amount1 || !amount2 || !method || !amount3 || !trxid) {
-      return res.status(400).json({ message: 'All fields are required' });
+    // Validate required fields
+    const requiredFields = {
+      company, phone, password, serviceType, name,
+      phone1, amount1, amount2, method, amount3, trxid
+    };
+
+    for (const [field, value] of Object.entries(requiredFields)) {
+      if (!value || value.toString().trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: `${field} is required`
+        });
+      }
     }
 
-    if (amount1 < 100 || amount2 < 100 || amount3 < 100) {
-      return res.status(400).json({ message: 'Minimum amount is 100 BDT' });
+    // Numeric validation
+    const amounts = {
+      amount1: parseFloat(amount1),
+      amount2: parseFloat(amount2),
+      amount3: parseFloat(amount3)
+    };
+
+    if (Object.values(amounts).some(amt => amt < 100)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Minimum amount is 100 BDT'
+      });
     }
 
-    if (!/^(?:\+?88)?01[3-9]\d{8}$/.test(phone)) {
-      return res.status(400).json({ message: 'Invalid phone number' });
+    // Phone validation
+    const cleanPhone = phone.replace(/[+88]/g, '');
+    if (!/^01[3-9]\d{8}$/.test(cleanPhone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid Bangladeshi phone number'
+      });
     }
 
-   const expectedAmount = (parseFloat(amount1) - parseFloat(amount2)) / 2;
-const tolerance = 0.01;
-if (Math.abs(parseFloat(amount3) - expectedAmount) > tolerance) {
-  return res.status(400).json({ message: 'Amount calculation mismatch' });
-}
-    // Create payment
+    // Payment calculation validation
+    const expectedAmount = (amounts.amount1 - amounts.amount2) / 2;
+    if (Math.abs(amounts.amount3 - expectedAmount) > 0.5) {
+      return res.status(400).json({
+        success: false,
+        message: `Amount mismatch. Expected: ৳${expectedAmount.toFixed(2)}`
+      });
+    }
+
+    // Check duplicate transaction
+    const existingPayment = await Payment.findOne({ trxid });
+    if (existingPayment) {
+      return res.status(409).json({
+        success: false,
+        message: 'Transaction ID already used'
+      });
+    }
+
+    // Create payment record
     const payment = new Payment({
-      user: req.user.id,
+      user: req.user._id,
       company,
-      phone,
-      password: await bcrypt.hash(password, 10),
+      phone: cleanPhone,
+      password: await bcrypt.hash(password, 12),
       serviceType,
       name,
       phone1,
-      amount1,
-      amount2,
+      ...amounts,
       method,
-      amount3,
       trxid,
       status: 'Pending'
     });
 
     await payment.save();
-    res.status(201).json({ message: 'Payment submitted successfully' });
+
+    res.status(201).json({
+      success: true,
+      message: 'Payment submitted successfully',
+      paymentId: payment._id
+    });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Payment processing failed' });
+    console.error('Payment Error:', error);
+    const message = error.code === 11000 
+      ? 'Duplicate transaction detected' 
+      : 'Payment processing failed';
+    
+    res.status(500).json({
+      success: false,
+      message
+    });
   }
 });
 
-app.get('/last-payment', authMiddleware, async (req, res) => {
-  try {
-    const payment = await Payment.findOne({ user: req.user.id })
-      .sort({ createdAt: -1 })
-      .lean();
-
-    if (!payment) return res.status(404).json({ message: 'No payments found' });
-
-    delete payment.password;
-    delete payment.__v;
-    
-    res.json(payment);
-    
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Error Handling
+// ======================
+// Server Setup
+// ======================
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error' });
+  console.error('Global Error:', err);
+  res.status(500).json({
+    success: false,
+    message: 'Internal server error'
+  });
 });
 
-// Server Start
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  process.on('unhandledRejection', err => {
+    console.error('Unhandled Rejection:', err);
+    process.exit(1);
+  });
 });
