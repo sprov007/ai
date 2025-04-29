@@ -930,4 +930,8 @@ input[type="tel"] {
 .countdown-expired {
   color: #ff4444;
 }
-
+.form-group { margin-bottom: 1.5rem; }
+.amount-group { display: grid; gap: 1rem; }
+.success-box { background: #dfd; border-color: #4CAF50; }
+.form-actions { display: flex; gap: 1rem; margin-top: 2rem; }
+.secondary { background: #f0f0f0; color: #333; }
