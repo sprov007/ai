@@ -266,7 +266,7 @@ app.post('/payment', authMiddleware, async (req, res) => {
       amount2,
       method,
       amount3,
-      trxid
+      trxid,
       status: 'Pending'
     });
 
