@@ -298,3 +298,11 @@ app.listen(PORT, () => {
     process.exit(1);
   });
 });
+// Add to server.js
+app.get('/dashboard', authMiddleware, (req, res) => {
+  // Return dashboard data
+});
+
+app.get('/last-payment', authMiddleware, async (req, res) => {
+  // Return user's last payment
+});
