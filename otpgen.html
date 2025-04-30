@@ -132,7 +132,74 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 100);
 });
 </script>
+<script>
+  // Define validation functions
+  function validateBDPhone(phone) {
+    const bdPhoneRegex = /^01[3-9]\d{8}$/; // Bangladesh phone number regex
+    return bdPhoneRegex.test(phone);
+  }
 
+  function validateAmount(amount) {
+    const minAmount = 100; // Minimum amount
+    const maxAmount = 100000; // Maximum amount
+    return amount >= minAmount && amount <= maxAmount;
+  }
+
+  // Handle form submission
+  document.getElementById('payment-form').addEventListener('submit', async function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    const phone = document.getElementById('phone').value;
+    const amount = parseFloat(document.getElementById('amount1').value);
+    const formData = new FormData(this); // Collect form data
+
+    if (!validateBDPhone(phone)) {
+      alert('Invalid phone number. Please enter a valid Bangladeshi phone number (01XXXXXXXXX).');
+      return;
+    }
+
+    if (!validateAmount(amount)) {
+      alert('Invalid amount. Please enter an amount between 100 and 100,000.');
+      return;
+    }
+
+    try {
+      // Send data to server
+      const response = await fetch('https://your-server-endpoint.com/api/payment', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        document.getElementById('confirmation-message').innerText = result.message || 'Payment successfully submitted!';
+      } else {
+        const error = await response.json();
+        alert(error.message || 'An error occurred while processing your payment.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to connect to the server. Please try again later.');
+    }
+  });
+
+  // Calculation logic for server charge
+  document.addEventListener('DOMContentLoaded', () => {
+    const amount1 = document.getElementById('amount1');
+    const amount2 = document.getElementById('amount2');
+    const amount3 = document.getElementById('amount3');
+
+    function calculate() {
+      const val1 = parseFloat(amount1.value) || 0;
+      const val2 = parseFloat(amount2.value) || 0;
+      amount3.value = ((val1 - val2) / 2).toFixed(2);
+    }
+
+    amount1.addEventListener('input', calculate);
+    amount2.addEventListener('input', calculate);
+    calculate(); // Initial calculation
+  });
+</script>
 <!-- Payment form JS will be linked properly -->
 <script src="./assets/js/main.js"></script>
 </body>
