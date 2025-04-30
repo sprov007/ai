@@ -20,10 +20,10 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'https://sprov007.github.io',
-    'http://localhost:3000',
-    process.env.PRODUCTION_URL
+    'http://localhost:3000'
   ],
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
