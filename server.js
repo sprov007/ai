@@ -49,14 +49,18 @@ mongoose.connect(process.env.MONGODB_URI)
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.header('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
+    if (!authHeader) {
       return res.status(401).json({ 
         success: false,
-        message: 'Authorization header missing or invalid'
+        message: 'Authorization header missing'
       });
     }
 
-    const token = authHeader.split(' ')[1];
+    // Handle both "Bearer token" and direct token cases
+    const token = authHeader.startsWith('Bearer ') 
+      ? authHeader.split(' ')[1] 
+      : authHeader;
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     const user = await User.findById(decoded.id);
@@ -191,18 +195,12 @@ app.post('/payment', authMiddleware, async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    const requiredFields = {
-      company, phone, password, serviceType, name,
-      phone1, amount1, amount2, method, amount3, trxid
-    };
-
-    for (const [field, value] of Object.entries(requiredFields)) {
-      if (!value || value.toString().trim() === '') {
-        return res.status(400).json({
-          success: false,
-          message: `${field} is required`
-        });
-      }
+    if (!company || !phone || !password || !serviceType || !name || 
+        !phone1 || !amount1 || !amount2 || !method || !amount3 || !trxid) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required'
+      });
     }
 
     // Numeric validation
@@ -262,10 +260,10 @@ app.post('/payment', authMiddleware, async (req, res) => {
       serviceType,
       name,
       phone1,
-      amount1,
-      amount2,
+      amount1: amounts.amount1,
+      amount2: amounts.amount2,
       method,
-      amount3,
+      amount3: amounts.amount3,
       trxid,
       status: 'Pending'
     });
