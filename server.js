@@ -262,9 +262,11 @@ app.post('/payment', authMiddleware, async (req, res) => {
       serviceType,
       name,
       phone1,
-      ...amounts,
+      amount1,
+      amount2,
       method,
-      trxid,
+      amount3,
+      trxid
       status: 'Pending'
     });
 
