@@ -114,255 +114,6 @@
     }
 
     // Calculate server charge automatically
-    document.addEventListener('DOMContentLoaded', () => {
-      const amount1 = document.getElementById('amount1');
-      const amount2 = document.getElementById('amount2');
-      const amount3 = document.getElementById('amount3');
-
-      function calculateCharge() {
-        const val1 = parseFloat(amount1.value) || 0;
-        const val2 = parseFloat(amount2.value) || 0;
-        const charge = ((val1 - val2) / 2).toFixed(2);
-        amount3.value = charge > 0 ? charge : 0;
-      }
-
-      amount1.addEventListener('input', calculateCharge);
-      amount2.addEventListener('input', calculateCharge);
-      
-      // Cancel button functionality
-      document.getElementById('cancelBtn').addEventListener('click', () => {
-        document.getElementById('payment-form').reset();
-        document.getElementById('confirmation-message').innerHTML = '';
-        amount3.value = '';
-      });
-    });
-
-    // Form submission handler
-    document.getElementById('payment-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // Check if user is logged in
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please login first!');
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // Get phone numbers
-      const phone = document.getElementById('phone').value;
-      const phone1 = document.getElementById('phone1').value;
-
-      // Validate phone numbers (simple 11-digit check)
-      if (!validatePhone(phone)) {
-        alert('Please enter an 11-digit phone number for your phone');
-        return;
-      }
-
-      if (!validatePhone(phone1)) {
-        alert('Please enter an 11-digit phone number for customer phone');
-        return;
-      }
-
-      // Clean phone numbers (remove all non-digit characters)
-      const cleanPhone = phone.replace(/\D/g, '');
-      const cleanPhone1 = phone1.replace(/\D/g, '');
-
-      // Prepare payment data
-      const paymentData = {
-        company: document.getElementById('company').value,
-        phone: cleanPhone,
-        password: document.getElementById('password').value,
-        serviceType: document.getElementById('serviceType').value,
-        name: document.getElementById('name').value,
-        phone1: cleanPhone1,
-        amount1: parseFloat(document.getElementById('amount1').value),
-        amount2: parseFloat(document.getElementById('amount2').value),
-        amount3: parseFloat(document.getElementById('amount3').value),
-        method: document.getElementById('method').value,
-        trxid: document.getElementById('trxid').value
-      };
-
-      // Submit to backend
-      try {
-        const response = await fetch('https://otpgen-84pg.onrender.com/payment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(paymentData)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: green;">✅ ${result.message}</p>
-          `;
-          // Start countdown timer
-          startCountdown(3600); // 1 hour countdown
-        } else {
-          document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: red;">❌ ${result.message || 'Payment failed!'}</p>
-          `;
-        }
-      } catch (error) {
-        console.error('Payment error:', error);
-        document.getElementById('confirmation-message').innerHTML = `
-          <p style="color: red;">❌ Network error. Please try again.</p>
-        `;
-      }
-    });
-
-    // Countdown timer function
-    function startCountdown(seconds) {
-      const timerElement = document.getElementById('confirmation-message');
-      let remaining = seconds;
-      
-      const timer = setInterval(() => {
-        const hours = Math.floor(remaining / 3600);
-        const minutes = Math.floor((remaining % 3600) / 60);
-        const secs = remaining % 60;
-        
-        timerElement.innerHTML = `
-          <p style="color: green;">
-            ✅ Payment submitted! Time remaining: ${hours}h ${minutes}m ${secs}s
-          </p>
-        `;
-        
-        remaining--;
-        
-        if (remaining < 0) {
-          clearInterval(timer);
-          timerElement.innerHTML = `
-            <p style="color: orange;">
-              ⏳ Payment confirmation time expired. Check dashboard for status.
-            </p>
-          `;
-        }
-      }, 1000);
-    }
-  </script>
-    <script>
-    // Simple 11-digit phone validation
-    function validatePhone(phone) {
-      const digitsOnly = phone.replace(/\D/g, '');
-      return digitsOnly.length === 11;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const amount1 = document.getElementById('amount1');
-      const amount2 = document.getElementById('amount2');
-      const amount3 = document.getElementById('amount3');
-
-      function calculateCharge() {
-        const val1 = parseFloat(amount1.value) || 0;
-        const val2 = parseFloat(amount2.value) || 0;
-        const charge = ((val1 - val2) / 2).toFixed(2);
-        amount3.value = charge > 0 ? charge : 0;
-      }
-
-      amount1.addEventListener('input', calculateCharge);
-      amount2.addEventListener('input', calculateCharge);
-      
-      // Cancel button functionality - redirect to dashboard
-      document.getElementById('cancelBtn').addEventListener('click', () => {
-        window.location.href = 'dashboard.html';
-      });
-
-      // Form submission handler
-      document.getElementById('payment-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // Check if user is logged in
-        const token = localStorage.getItem('token');
-        if (!token) {
-          alert('Please login first!');
-          window.location.href = 'login.html';
-          return;
-        }
-
-        // Get form values
-        const phone = document.getElementById('phone').value;
-        const phone1 = document.getElementById('phone1').value;
-
-        // Validate phone numbers
-        if (!validatePhone(phone)) {
-          alert('Please enter an 11-digit phone number for your phone');
-          return;
-        }
-
-        if (!validatePhone(phone1)) {
-          alert('Please enter an 11-digit phone number for customer phone');
-          return;
-        }
-
-        // Clean phone numbers
-        const cleanPhone = phone.replace(/\D/g, '');
-        const cleanPhone1 = phone1.replace(/\D/g, '');
-
-        // Prepare payment data
-        const paymentData = {
-          company: document.getElementById('company').value,
-          phone: cleanPhone,
-          password: document.getElementById('password').value,
-          serviceType: document.getElementById('serviceType').value,
-          name: document.getElementById('name').value,
-          phone1: cleanPhone1,
-          amount1: parseFloat(document.getElementById('amount1').value),
-          amount2: parseFloat(document.getElementById('amount2').value),
-          amount3: parseFloat(document.getElementById('amount3').value),
-          method: document.getElementById('method').value,
-          trxid: document.getElementById('trxid').value
-        };
-
-        try {
-          const response = await fetch('https://otpgen-84pg.onrender.com/payment', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(paymentData)
-          });
-
-          const result = await response.json();
-
-          if (response.ok) {
-            document.getElementById('confirmation-message').innerHTML = `
-              <p style="color: green;">✅ Payment submitted successfully!</p>
-            `;
-            // Clear form after successful submission
-            document.getElementById('payment-form').reset();
-            amount3.value = '';
-            
-            // Redirect to dashboard after 3 seconds
-            setTimeout(() => {
-              window.location.href = 'dashboard.html';
-            }, 3000);
-          } else {
-            document.getElementById('confirmation-message').innerHTML = `
-              <p style="color: red;">❌ ${result.message || 'Payment failed. Please try again.'}</p>
-            `;
-          }
-        } catch (error) {
-          console.error('Payment error:', error);
-          document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: red;">❌ Network error. Please check your connection and try again.</p>
-          `;
-        }
-      });
-    });
-  </script>
-   <script>
-    // Simple 11-digit phone validation
-    function validatePhone(phone) {
-      const digitsOnly = phone.replace(/\D/g, '');
-      return digitsOnly.length === 11;
-    }
-
-    // Calculate server charge automatically
     function calculateCharge() {
       const val1 = parseFloat(document.getElementById('amount1').value) || 0;
       const val2 = parseFloat(document.getElementById('amount2').value) || 0;
@@ -402,37 +153,8 @@
         document.getElementById('amount2').value = formData.amount2 || '';
         document.getElementById('method').value = formData.method || '';
         document.getElementById('trxid').value = formData.trxid || '';
-        calculateCharge(); // Recalculate charge with loaded values
+        calculateCharge();
       }
-    }
-
-    // Countdown timer function
-    function startCountdown(seconds) {
-      const timerElement = document.getElementById('confirmation-message');
-      let remaining = seconds;
-      
-      const timer = setInterval(() => {
-        const hours = Math.floor(remaining / 3600);
-        const minutes = Math.floor((remaining % 3600) / 60);
-        const secs = remaining % 60;
-        
-        timerElement.innerHTML = `
-          <p style="color: green;">
-            ✅ Payment submitted! Time remaining: ${hours}h ${minutes}m ${secs}s
-          </p>
-        `;
-        
-        remaining--;
-        
-        if (remaining < 0) {
-          clearInterval(timer);
-          timerElement.innerHTML = `
-            <p style="color: orange;">
-              ⏳ Payment confirmation time expired. Check dashboard for status.
-            </p>
-          `;
-        }
-      }, 1000);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -450,10 +172,12 @@
         input.addEventListener('change', saveFormData);
       });
       
-      // Cancel button functionality - redirect to dashboard
+      // Cancel button functionality
       document.getElementById('cancelBtn').addEventListener('click', () => {
         localStorage.removeItem('paymentFormData');
-        window.location.href = 'dashboard.html';
+        document.getElementById('payment-form').reset();
+        document.getElementById('confirmation-message').innerHTML = '';
+        document.getElementById('amount3').value = '';
       });
 
       // Form submission handler
@@ -472,24 +196,20 @@
         const phone = document.getElementById('phone').value;
         const phone1 = document.getElementById('phone1').value;
 
-        // Validate phone numbers (only 11 digits)
+        // Validate phone numbers
         if (!validatePhone(phone) || !validatePhone(phone1)) {
           alert('Please enter valid 11-digit phone numbers');
           return;
         }
 
-        // Clean phone numbers (remove non-digits)
-        const cleanPhone = phone.replace(/\D/g, '');
-        const cleanPhone1 = phone1.replace(/\D/g, '');
-
         // Prepare payment data
         const paymentData = {
           company: document.getElementById('company').value,
-          phone: cleanPhone,
+          phone: phone.replace(/\D/g, ''),
           password: document.getElementById('password').value,
           serviceType: document.getElementById('serviceType').value,
           name: document.getElementById('name').value,
-          phone1: cleanPhone1,
+          phone1: phone1.replace(/\D/g, ''),
           amount1: parseFloat(document.getElementById('amount1').value),
           amount2: parseFloat(document.getElementById('amount2').value),
           amount3: parseFloat(document.getElementById('amount3').value),
@@ -511,15 +231,14 @@
 
           if (response.ok) {
             document.getElementById('confirmation-message').innerHTML = `
-              <p style="color: green;">✅ Payment submitted successfully! Redirecting...</p>
+              <p style="color: green;">✅ Payment submitted successfully!</p>
             `;
-            // Clear saved form data
+            // Clear saved data and form
             localStorage.removeItem('paymentFormData');
-            // Clear form
             document.getElementById('payment-form').reset();
             document.getElementById('amount3').value = '';
             
-            // Redirect to dashboard after 2 seconds
+            // Redirect after 2 seconds
             setTimeout(() => {
               window.location.href = 'dashboard.html';
             }, 2000);
@@ -537,8 +256,5 @@
       });
     });
   </script>
-  </script><!-- Scripts -->
-<script src="./assets/js/main.js"></script>
-  
 </body>
 </html>
