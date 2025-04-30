@@ -355,7 +355,7 @@
       });
     });
   </script>
-  <script>
+   <script>
     // Simple 11-digit phone validation
     function validatePhone(phone) {
       const digitsOnly = phone.replace(/\D/g, '');
@@ -364,10 +364,46 @@
 
     // Calculate server charge automatically
     function calculateCharge() {
-      const val1 = parseFloat(amount1.value) || 0;
-      const val2 = parseFloat(amount2.value) || 0;
+      const val1 = parseFloat(document.getElementById('amount1').value) || 0;
+      const val2 = parseFloat(document.getElementById('amount2').value) || 0;
       const charge = ((val1 - val2) / 2).toFixed(2);
-      amount3.value = charge > 0 ? charge : 0;
+      document.getElementById('amount3').value = charge > 0 ? charge : 0;
+    }
+
+    // Save form data to localStorage
+    function saveFormData() {
+      const formData = {
+        company: document.getElementById('company').value,
+        phone: document.getElementById('phone').value,
+        password: document.getElementById('password').value,
+        serviceType: document.getElementById('serviceType').value,
+        name: document.getElementById('name').value,
+        phone1: document.getElementById('phone1').value,
+        amount1: document.getElementById('amount1').value,
+        amount2: document.getElementById('amount2').value,
+        method: document.getElementById('method').value,
+        trxid: document.getElementById('trxid').value
+      };
+      localStorage.setItem('paymentFormData', JSON.stringify(formData));
+    }
+
+    // Load form data from localStorage
+    function loadFormData() {
+      const savedData = localStorage.getItem('paymentFormData');
+      if (savedData) {
+        const formData = JSON.parse(savedData);
+        document.getElementById('company').value = formData.company || '';
+        document.getElementById('phone').value = formData.phone || '';
+        document.getElementById('password').value = formData.password || '';
+        document.getElementById('serviceType').value = formData.serviceType || '';
+        document.getElementById('name').value = formData.name || '';
+        document.getElementById('phone1').value = formData.phone1 || '';
+        document.getElementById('amount1').value = formData.amount1 || '';
+        document.getElementById('amount2').value = formData.amount2 || '';
+        document.getElementById('method').value = formData.method || '';
+        document.getElementById('trxid').value = formData.trxid || '';
+        calculateCharge(); // Recalculate charge with loaded values
+      }
     }
 
     // Countdown timer function
@@ -400,16 +436,23 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const amount1 = document.getElementById('amount1');
-      const amount2 = document.getElementById('amount2');
-      const amount3 = document.getElementById('amount3');
+      // Load saved form data
+      loadFormData();
 
       // Setup calculation listeners
-      amount1.addEventListener('input', calculateCharge);
-      amount2.addEventListener('input', calculateCharge);
+      document.getElementById('amount1').addEventListener('input', calculateCharge);
+      document.getElementById('amount2').addEventListener('input', calculateCharge);
       
-      // Cancel button functionality - redirect to dashboard only
+      // Setup input listeners to save form data
+      const inputs = document.querySelectorAll('#payment-form input, #payment-form select');
+      inputs.forEach(input => {
+        input.addEventListener('input', saveFormData);
+        input.addEventListener('change', saveFormData);
+      });
+      
+      // Cancel button functionality - redirect to dashboard
       document.getElementById('cancelBtn').addEventListener('click', () => {
+        localStorage.removeItem('paymentFormData');
         window.location.href = 'dashboard.html';
       });
 
@@ -425,23 +468,28 @@
           return;
         }
 
-        // Validate phone numbers
+        // Get form values
         const phone = document.getElementById('phone').value;
         const phone1 = document.getElementById('phone1').value;
 
+        // Validate phone numbers (only 11 digits)
         if (!validatePhone(phone) || !validatePhone(phone1)) {
           alert('Please enter valid 11-digit phone numbers');
           return;
         }
 
+        // Clean phone numbers (remove non-digits)
+        const cleanPhone = phone.replace(/\D/g, '');
+        const cleanPhone1 = phone1.replace(/\D/g, '');
+
         // Prepare payment data
         const paymentData = {
           company: document.getElementById('company').value,
-          phone: phone.replace(/\D/g, ''),
+          phone: cleanPhone,
           password: document.getElementById('password').value,
           serviceType: document.getElementById('serviceType').value,
           name: document.getElementById('name').value,
-          phone1: phone1.replace(/\D/g, ''),
+          phone1: cleanPhone1,
           amount1: parseFloat(document.getElementById('amount1').value),
           amount2: parseFloat(document.getElementById('amount2').value),
           amount3: parseFloat(document.getElementById('amount3').value),
@@ -465,6 +513,12 @@
             document.getElementById('confirmation-message').innerHTML = `
               <p style="color: green;">✅ Payment submitted successfully! Redirecting...</p>
             `;
+            // Clear saved form data
+            localStorage.removeItem('paymentFormData');
+            // Clear form
+            document.getElementById('payment-form').reset();
+            document.getElementById('amount3').value = '';
+            
             // Redirect to dashboard after 2 seconds
             setTimeout(() => {
               window.location.href = 'dashboard.html';
@@ -482,41 +536,7 @@
         }
       });
     });
-    <!DOCTYPE HTML>
-<html lang="en">
-<!-- [Previous head and body content remains exactly the same until script] -->
-
-<script>
-  // Bangladeshi phone validation (01XXXXXXXXX)
-  function validateBDPhone(phone) {
-    const digitsOnly = phone.replace(/\D/g, '');
-    return /^01[3-9]\d{8}$/.test(digitsOnly);
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // [Previous calculation and event listener code remains the same]
-    
-    document.getElementById('payment-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const phone = document.getElementById('phone').value;
-      const phone1 = document.getElementById('phone1').value;
-
-      // Validate phone numbers
-      if (!validateBDPhone(phone)) {
-        alert('Please enter a valid Bangladeshi phone number (01XXXXXXXXX)');
-        return;
-      }
-
-      if (!validateBDPhone(phone1)) {
-        alert('Please enter a valid Bangladeshi phone number (01XXXXXXXXX)');
-        return;
-      }
-
-      // [Rest of your submission code]
-    });
-  });
-</script>
+  </script>
   </script><!-- Scripts -->
 <script src="./assets/js/main.js"></script>
   
