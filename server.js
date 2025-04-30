@@ -39,13 +39,7 @@ app.use(limiter);
 // ======================
 // Database Connection
 // ======================
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 10,
-  serverSelectionTimeoutMS: 5000,
-  autoIndex: process.env.NODE_ENV === 'development'
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('✅ MongoDB connected successfully'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
@@ -87,6 +81,14 @@ const authMiddleware = async (req, res, next) => {
 // ======================
 // Routes
 // ======================
+
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Server is running'
+  });
+});
 
 // User Registration
 app.post('/register', async (req, res) => {
@@ -210,7 +212,14 @@ app.post('/payment', authMiddleware, async (req, res) => {
       amount3: parseFloat(amount3)
     };
 
-    if (Object.values(amounts).some(amt => amt < 100)) {
+    if (isNaN(amounts.amount1) || isNaN(amounts.amount2) || isNaN(amounts.amount3)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Amounts must be valid numbers'
+      });
+    }
+
+    if (amounts.amount1 < 100 || amounts.amount2 < 100 || amounts.amount3 < 100) {
       return res.status(400).json({
         success: false,
         message: 'Minimum amount is 100 BDT'
@@ -281,7 +290,7 @@ app.post('/payment', authMiddleware, async (req, res) => {
 });
 
 // ======================
-// Server Setup
+// Error Handling Middleware
 // ======================
 app.use((err, req, res, next) => {
   console.error('Global Error:', err);
@@ -291,18 +300,13 @@ app.use((err, req, res, next) => {
   });
 });
 
+// ======================
+// Server Setup
+// ======================
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   process.on('unhandledRejection', err => {
     console.error('Unhandled Rejection:', err);
     process.exit(1);
   });
-});
-// Add to server.js
-app.get('/dashboard', authMiddleware, (req, res) => {
-  // Return dashboard data
-});
-
-app.get('/last-payment', authMiddleware, async (req, res) => {
-  // Return user's last payment
 });
