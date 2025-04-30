@@ -34,7 +34,9 @@
       </select><br>
 
       <label for="phone">Your Phone Number:</label>
-      <input type="tel" id="phone" name="phone" required pattern="01[3-9]\d{8}" title="Bangladeshi phone number (01XXXXXXXXX)">
+      <input type="tel" id="phone" name="phone" required 
+             pattern="^(\+88)?01[3-9]\d{8}$" 
+             title="Bangladeshi phone number (01XXXXXXXXX, +8801XXXXXXXXX, or 8801XXXXXXXXX)">
       <br><br>
 
       <label for="password">NID/App Password:</label>
@@ -54,7 +56,9 @@
       <br><br>
 
       <label for="phone1">Customer Phone Number:</label>
-      <input type="tel" id="phone1" name="phone1" required pattern="01[3-9]\d{8}" title="Bangladeshi phone number (01XXXXXXXXX)">
+      <input type="tel" id="phone1" name="phone1" required 
+             pattern="^(\+88)?01[3-9]\d{8}$" 
+             title="Bangladeshi phone number (01XXXXXXXXX, +8801XXXXXXXXX, or 8801XXXXXXXXX)">
       <br><br>
 
       <label for="amount1">Amount:</label>
@@ -103,6 +107,13 @@
   </footer>
 
   <script>
+    // Improved Bangladeshi phone validation
+    function validateBDPhone(phone) {
+      if (!phone) return false;
+      const digitsOnly = phone.replace(/\D/g, '');
+      return /^(8801[3-9]\d{8}|01[3-9]\d{8})$/.test(digitsOnly);
+    }
+
     // Calculate server charge automatically
     document.addEventListener('DOMContentLoaded', () => {
       const amount1 = document.getElementById('amount1');
@@ -123,6 +134,7 @@
       document.getElementById('cancelBtn').addEventListener('click', () => {
         document.getElementById('payment-form').reset();
         document.getElementById('confirmation-message').innerHTML = '';
+        amount3.value = '';
       });
     });
 
@@ -138,26 +150,36 @@
         return;
       }
 
+      // Get form values
+      const phone = document.getElementById('phone').value;
+      const phone1 = document.getElementById('phone1').value;
+
       // Validate phone numbers
-      const phone = document.getElementById('phone').value.replace(/[+88]/g, '');
-      const phone1 = document.getElementById('phone1').value.replace(/[+88]/g, '');
-      
-      if (!/^01[3-9]\d{8}$/.test(phone) || !/^01[3-9]\d{8}$/.test(phone1)) {
-        alert('Please enter valid Bangladeshi phone numbers (01XXXXXXXXX)');
+      if (!validateBDPhone(phone)) {
+        alert('Please enter a valid Bangladeshi phone number for your phone (01XXXXXXXXX or 8801XXXXXXXXX)');
         return;
       }
+
+      if (!validateBDPhone(phone1)) {
+        alert('Please enter a valid Bangladeshi phone number for customer phone (01XXXXXXXXX or 8801XXXXXXXXX)');
+        return;
+      }
+
+      // Clean phone numbers (convert to 01XXXXXXXXX format)
+      const cleanPhone = phone.replace(/\D/g, '').replace(/^880/, '0');
+      const cleanPhone1 = phone1.replace(/\D/g, '').replace(/^880/, '0');
 
       // Prepare payment data
       const paymentData = {
         company: document.getElementById('company').value,
-        phone: phone,
+        phone: cleanPhone,
         password: document.getElementById('password').value,
         serviceType: document.getElementById('serviceType').value,
         name: document.getElementById('name').value,
-        phone1: phone1,
-        amount1: document.getElementById('amount1').value,
-        amount2: document.getElementById('amount2').value,
-        amount3: document.getElementById('amount3').value,
+        phone1: cleanPhone1,
+        amount1: parseFloat(document.getElementById('amount1').value),
+        amount2: parseFloat(document.getElementById('amount2').value),
+        amount3: parseFloat(document.getElementById('amount3').value),
         method: document.getElementById('method').value,
         trxid: document.getElementById('trxid').value
       };
@@ -183,7 +205,7 @@
           startCountdown(3600); // 1 hour countdown
         } else {
           document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: red;">❌ ${result.message}</p>
+            <p style="color: red;">❌ ${result.message || 'Payment failed!'}</p>
           `;
         }
       } catch (error) {
