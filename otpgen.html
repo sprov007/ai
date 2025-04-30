@@ -482,6 +482,41 @@
         }
       });
     });
+    <!DOCTYPE HTML>
+<html lang="en">
+<!-- [Previous head and body content remains exactly the same until script] -->
+
+<script>
+  // Bangladeshi phone validation (01XXXXXXXXX)
+  function validateBDPhone(phone) {
+    const digitsOnly = phone.replace(/\D/g, '');
+    return /^01[3-9]\d{8}$/.test(digitsOnly);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // [Previous calculation and event listener code remains the same]
+    
+    document.getElementById('payment-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const phone = document.getElementById('phone').value;
+      const phone1 = document.getElementById('phone1').value;
+
+      // Validate phone numbers
+      if (!validateBDPhone(phone)) {
+        alert('Please enter a valid Bangladeshi phone number (01XXXXXXXXX)');
+        return;
+      }
+
+      if (!validateBDPhone(phone1)) {
+        alert('Please enter a valid Bangladeshi phone number (01XXXXXXXXX)');
+        return;
+      }
+
+      // [Rest of your submission code]
+    });
+  });
+</script>
   </script><!-- Scripts -->
 <script src="./assets/js/main.js"></script>
   
