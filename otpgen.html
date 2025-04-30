@@ -135,9 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
   // Phone and amount validation
   function validateBDPhone(phone) {
-    const bdPhoneRegex = /^01[3-9]\d{8}$/;
-    return bdPhoneRegex.test(phone);
-  }
+  const normalized = phone.replace(/^(\+88)?/, ''); // Remove +88 if present
+  const bdPhoneRegex = /^01[3-9]\d{8}$/;
+  return bdPhoneRegex.test(phone);
+}
+
 
   function validateAmount(amount) {
     const minAmount = 100;
