@@ -22,38 +22,39 @@
   <button type="submit">Login</button>
 </form>
 <script>
-  // Add token validation on page load
- document.addEventListener('DOMContentLoaded', async () => {
-  const token = localStorage.getItem('token');
-  const tokenExp = localStorage.getItem('token_exp');
+  // Token validation on page load
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    const tokenExp = localStorage.getItem('token_exp');
 
-  if (!token || !tokenExp || Date.now() > parseInt(tokenExp)) {
-    // Token missing or expired
-    localStorage.removeItem('token');
-    localStorage.removeItem('token_exp');
-    return;
-  }
+    // Check token existence and expiration
+    if (!token || !tokenExp || Date.now() > parseInt(tokenExp)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('token_exp');
+      return;
+    }
 
-  try {
-    const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
-      headers: {
-        'Authorization': `Bearer ${token}`
+    try {
+      const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('token_exp');
       }
-    });
-    if (!response.ok) {
+    } catch (error) {
       localStorage.removeItem('token');
       localStorage.removeItem('token_exp');
     }
-  } catch (error) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('token_exp');
-  }
-});
+  });
 
-
-  // Update login script
+  // Login form handler
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
@@ -65,13 +66,13 @@
       });
 
       const result = await response.json();
-     if (response.ok) {
-  const oneHourFromNow = Date.now() + 3600000;
-  localStorage.setItem('token', result.token);
-  localStorage.setItem('token_exp', oneHourFromNow);
-  window.location.href = 'dashboard.html';
-}
- else {
+
+      if (response.ok) {
+        // Save token and expiration
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('token_exp', Date.now() + 3600000); // 1 hour
+        window.location.href = 'dashboard.html';
+      } else {
         document.getElementById('loginMessage').innerText = result.message;
       }
     } catch (error) {
@@ -79,6 +80,7 @@
     }
   });
 </script>
+
 
 <button onclick="goToDashboard()">Go to Dashboard</button>
 
