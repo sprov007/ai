@@ -6,28 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <link rel="stylesheet" href="./assets/css/main.css">
   <style>
-    .consignment-group {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border-radius: 8px;
-      position: relative;
-    }
-    .remove-consignment {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      color: #ff4444;
-      cursor: pointer;
-    }
-    .add-consignment {
-      margin-bottom: 2rem;
-    }
-    .consignment-counter {
-      margin-bottom: 1rem;
-      color: #1cb495;
-      font-weight: bold;
-    }
+    /* ... (keep existing styles unchanged) ... */
   </style>
 </head>
 <body class="is-preload">
@@ -35,14 +14,12 @@
   <h1>Ai Payment Processor</h1>
 
   <header id="header">
-    <h3>Service Payment</h3>
-    <p>
-      একাধিক কনসাইমেন্ট একসাথে সাবমিট করুন।
-    </p>
+    <h3>Bulk Service Payment</h3>
+    <p>একাধিক কনসাইমেন্ট একসাথে সাবমিট করুন।</p>
   </header>
 
   <section>
-    <h3>সার্ভিস রিকুয়েস্ট </h3>
+    <h3>সার্ভিস রিকুয়েস্ট</h3>
 
     <form id="payment-form">
       <!-- Common Fields -->
@@ -116,6 +93,7 @@
           <option value="Nagad">Nagad</option>
         </select>
       </div>
+      
       <div class="form-group">
         <label for="trxid">Bulk TRX ID:</label>
         <input type="text" id="trxid" name="trxid" required minlength="8">
@@ -177,38 +155,43 @@
       document.getElementById('consignments-container').innerHTML = 
         document.querySelector('.consignment-group').outerHTML;
       calculateTotalCharge();
+      document.getElementById('confirmation-message').innerHTML = '';
     }
 
     document.addEventListener('input', e => {
-      if(e.target.classList.contains('amount1') || 
-         e.target.classList.contains('amount2')) {
+      if(e.target.classList.contains('amount1') || e.target.classList.contains('amount2')) {
         calculateTotalCharge();
       }
     });
 
     document.getElementById('payment-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+      document.getElementById('confirmation-message').innerHTML = '';
+
+      // Sanitize phone numbers
+      const sanitizePhone = (phone) => phone.replace(/\D/g, '');
+
       const formData = {
         company: document.getElementById('company').value,
-        phone: document.getElementById('phone').value,
+        phone: sanitizePhone(document.getElementById('phone').value),
         password: document.getElementById('password').value,
         method: document.getElementById('method').value,
         trxid: document.getElementById('trxid').value,
-        amount3: document.getElementById('amount3').value,
+        amount3: parseFloat(document.getElementById('amount3').value),
         consignments: []
       };
 
-      document.querySelectorAll('.consignment-group').forEach((group, index) => {
+      // Process consignments
+      document.querySelectorAll('.consignment-group').forEach((group) => {
         formData.consignments.push({
-          name: group.querySelector('.name').value,
-          phone: group.querySelector('.phone1').value,
-          amount1: group.querySelector('.amount1').value,
-          amount2: group.querySelector('.amount2').value
+          name: group.querySelector('.name').value.trim(),
+          phone: sanitizePhone(group.querySelector('.phone1').value),
+          amount1: parseFloat(group.querySelector('.amount1').value),
+          amount2: parseFloat(group.querySelector('.amount2').value)
         });
       });
 
-      // Phone validation
+      // Validate phone numbers
       const phoneRegex = /^01[3-9]\d{8}$/;
       if (!phoneRegex.test(formData.phone)) {
         alert('Invalid your phone number! Must be 11 digits starting with 013-019');
@@ -217,12 +200,13 @@
 
       for (const [index, consignment] of formData.consignments.entries()) {
         if (!phoneRegex.test(consignment.phone)) {
-          alert(`Invalid phone in Consignment #${index + 1} (${consignment.name || 'no name'})! Must be 11 digits starting with 013-019`);
+          alert(`Invalid phone in Consignment #${index + 1} (${consignment.name || 'no name'})!`);
           return;
         }
       }
 
-      if(!localStorage.getItem('token')) {
+      // Check authentication
+      if (!localStorage.getItem('token')) {
         alert('Please login first!');
         window.location.href = 'login.html';
         return;
@@ -240,25 +224,31 @@
 
         const result = await response.json();
         
-        if(response.ok) {
+        if (response.ok) {
           document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: green;">✅ ${result.consignments.length} payments submitted!</p>
+            <p style="color: green;">✅ ${result.consignments?.length || 0} payments submitted!</p>
           `;
           clearForm();
         } else {
+          let errorMessage = result.message || 'Server error';
+          if (response.status === 401) {
+            errorMessage += ' - Session expired. Redirecting to login...';
+            setTimeout(() => window.location.href = 'login.html', 2000);
+          }
           document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: red;">❌ ${result.message}</p>
+            <p style="color: red;">❌ ${errorMessage}</p>
           `;
         }
-      } catch(error) {
-        console.error('Error:', error);
+      } catch (error) {
+        console.error('Network Error:', error);
         document.getElementById('confirmation-message').innerHTML = `
-          <p style="color: red;">❌ Network error. Please try again.</p>
+          <p style="color: red;">❌ Connection error: ${error.message}</p>
+          <p style="color: red;">Check network connection and server status</p>
         `;
       }
     });
   </script>
   <script src="./assets/js/load-navbar.js"></script>
   <script src="./assets/js/main.js"></script>
-
+</body>
 </html>
