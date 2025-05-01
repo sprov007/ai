@@ -248,3 +248,21 @@ app.listen(PORT, () => {
     process.exit(1);
   });
 });
+// Add this route to server.js
+app.get('/last-payment', authMiddleware, async (req, res) => {
+  try {
+    const payment = await Payment.findOne({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .lean();
+    
+    if (!payment) return res.status(404).json({ message: 'No payments found' });
+    
+    // Remove sensitive data
+    delete payment.password;
+    delete payment.__v;
+    
+    res.json(payment);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching payment' });
+  }
+});
