@@ -118,11 +118,6 @@
 window.applyForFreeService = function() {
   const lastRequest = localStorage.getItem('lastFreeRequest');
   const today = new Date().toDateString();
-  
-  if (lastRequest === today) {
-    alert('দুঃখিত! আপনি ইতিমধ্যে আজকের ফ্রি সার্ভিস ব্যবহার করেছেন।\nSorry! You already used today\'s free service.');
-    return;
-  }
 
   if (confirm(`প্রতিদিন ১টি ফ্রি সার্ভিস পেতে WhatsApp এ "ফ্রি সার্ভিস" লিখে পাঠান 01568760780\nSend "FREE SERVICE" to 01568760780 on WhatsApp to claim`)) {
     window.open('https://wa.me/8801568760780?text=FREE%20SERVICE%20REQUEST', '_blank');
