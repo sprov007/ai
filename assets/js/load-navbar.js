@@ -129,3 +129,9 @@ window.applyForFreeService = function() {
     localStorage.setItem('lastFreeRequest', today);
   }
 };
+// Add in the applyForFreeService function
+const remaining = 50 - parseInt(localStorage.getItem('usedFreeServices') || 0;
+if (remaining <= 0) {
+  alert('দুঃখিত! আজকের সমস্ত ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All free services for today are exhausted.');
+  return;
+}
