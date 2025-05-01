@@ -14,6 +14,15 @@
       <div class="nav-links">
         <a href="./dashboard.html" class="icon solid fa-home"><span>Dashboard</span></a>
         <a href="./otpgen.html" class="icon solid fa-key"><span>OTP Generator</span></a>
+      <!-- Inside the nav-links div -->
+<div class="nav-links">
+  <a href="./dashboard.html" class="icon solid fa-home"><span>Dashboard</span></a>
+  <a href="./otpgen.html" class="icon solid fa-key"><span>OTP Generator</span></a>
+  <button onclick="applyForFreeService()" class="icon solid fa-star" 
+          style="color: #ffd700; border-left: 1px solid rgba(255,215,0,0.3); padding-left: 1em;">
+    <span>Free Service</span>
+  </button>
+</div>
       </div>
       <div class="nav-user">
         <button onclick="logout()" class="icon solid fa-sign-out-alt"><span>Logout</span></button>
