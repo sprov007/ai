@@ -18,9 +18,10 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 app.use(cors({
   origin: [
-    'https://sprov007.github.io',
-    'http://localhost:3000'
-  ],
+  'https://sprov007.github.io',
+  'http://localhost:5500', // Common Live Server port
+  'http://127.0.0.1:5500'
+],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
