@@ -7,103 +7,161 @@
 		<link rel="stylesheet" href="./assets/css/main.css">
 	</head>
 	<body class="is-preload">
-<h3> FREE PALESTINE</h3>
-	<!-- Header -->
-	<header id="header">
-	<h1>Welcome To OTPGEN</h1>
-	<p>We are dedicated provide you services with quality and gurantee.Success is our only goal.<br />
-	Brought to you by <a href="">One1</a>.</p>
-	</header>
+		<h3> FREE PALESTINE</h3>
+		<!-- Header -->
+		<header id="header">
+			<h1>Welcome To OTPGEN</h1>
+			<p>We are dedicated to provide you services with quality and guarantee. Success is our only goal.<br />
+			Brought to you by <a href="">One1</a>.</p>
+		</header>
 
-<script>
-  // Add this at the top of your script
-  document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = 'login.html';
-      return;
-    }
+		<script>
+			document.addEventListener('DOMContentLoaded', async () => {
+				// Authentication check
+				const token = localStorage.getItem('token');
+				if (!token) {
+					window.location.href = 'login.html';
+					return;
+				}
 
-    try {
-      const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
-        headers: { 'Authorization': token }
-      });
-      
-      if (!response.ok) {
-        localStorage.removeItem('token');
-        window.location.href = 'login.html';
-      }
-    } catch (error) {
-      localStorage.removeItem('token');
-      window.location.href = 'login.html';
-    }
-  });
-// Add this to dashboard.html script
-async function loadPaymentStatus() {
-  try {
-    const response = await fetch('https://otpgen-84pg.onrender.com/last-payment', {
-      headers: { 'Authorization': localStorage.getItem('token') }
-    });
-    
-    const payment = await response.json();
-    // Display logic here
-  } catch {
-    // Error handling
-  }
-}
-// dashboard.html - Add after token validation
-await loadPaymentStatus();
-</script>
-<!-- Add after services section -->
-<section class="special">
-  <h2>Latest Payment Status</h2>
-  <div class="box alt">
-    <div class="row gtr-uniform">
-      <div class="col-12">
-        <div class="table-wrapper">
-          <table class="alt">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>TRX ID</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Time Remaining</th>
-              </tr>
-            </thead>
-            <tbody id="payment-status">
-              <!-- Dynamic content -->
-            </tbody>
-          </table>
-        </div>
-        <div id="countdown" class="icon fa-clock"></div>
-      </div>
-    </div>
-  </div>
-</section>
+				try {
+					// Validate token
+					const authResponse = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
+						headers: { 'Authorization': token }
+					});
+					
+					if (!authResponse.ok) throw new Error('Invalid token');
 
+					// Load payment data after successful auth
+					await loadPaymentStatus();
 
-  <section>
-    <h2>Our Services:</h2>
-	<ul><a href="otpgen.html">Otp Generator</a></ul>
-	<ul>Password Cracker</ul>
-	<ul>Location Tracker</ul>
-	<ul>NID Call List</ul>
-  </section>
+				} catch (error) {
+					localStorage.removeItem('token');
+					window.location.href = 'login.html';
+				}
+			});
+
+			async function loadPaymentStatus() {
+				try {
+					const response = await fetch('https://otpgen-84pg.onrender.com/last-payment', {
+						headers: { 'Authorization': localStorage.getItem('token') }
+					});
+					
+					if (!response.ok) return;
+					
+					const payment = await response.json();
+					const tbody = document.querySelector('#payment-status');
+					
+					// Clear existing content
+					tbody.innerHTML = '';
+					
+					// Add payment row
+					const row = `
+						<tr>
+							<td>${payment.company}</td>
+							<td>${payment.trxid}</td>
+							<td>৳${payment.amount3?.toFixed(2) || 0}</td>
+							<td>
+								<span class="status-indicator ${payment.status === 'Completed' ? 'status-completed' : 'status-pending'}">
+									${payment.status}
+								</span>
+							</td>
+							<td>
+								<span id="countdown-timer" class="${payment.status === 'Completed' ? 'countdown-expired' : ''}">
+									${payment.status === 'Completed' ? 'Completed' : 'Processing...'}
+								</span>
+							</td>
+						</tr>`;
+					
+					tbody.innerHTML = row;
+					
+					// Start countdown if pending
+					if (payment.status === 'Pending' && payment.createdAt) {
+						startCountdown(new Date(payment.createdAt));
+					}
+				} catch (error) {
+					console.error('Payment load error:', error);
+				}
+			}
+
+			function startCountdown(createdAt) {
+				const processingTime = 24 * 60 * 60 * 1000; // 24 hours
+				const endTime = new Date(createdAt.getTime() + processingTime);
+				
+				function updateTimer() {
+					const now = new Date();
+					const remaining = endTime - now;
+					
+					if (remaining <= 0) {
+						document.getElementById('countdown-timer').textContent = 'Completed';
+						document.getElementById('countdown-timer').classList.add('countdown-expired');
+						return;
+					}
+					
+					const hours = Math.floor(remaining / (1000 * 60 * 60));
+					const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+					const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+					
+					document.getElementById('countdown-timer').textContent = 
+						`${hours}h ${minutes}m ${seconds}s remaining`;
+				}
+				
+				updateTimer();
+				setInterval(updateTimer, 1000);
+			}
+		</script>
+
+		<!-- Payment Status Section -->
+		<section class="special">
+			<h2>Latest Payment Status</h2>
+			<div class="box alt">
+				<div class="row gtr-uniform">
+					<div class="col-12">
+						<div class="table-wrapper">
+							<table class="alt">
+								<thead>
+									<tr>
+										<th>Company</th>
+										<th>TRX ID</th>
+										<th>Amount</th>
+										<th>Status</th>
+										<th>Time Remaining</th>
+									</tr>
+								</thead>
+								<tbody id="payment-status">
+									<!-- Dynamic content will be inserted here -->
+								</tbody>
+							</table>
+						</div>
+						<div id="countdown" class="icon fa-clock"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<h2>Our Services:</h2>
+			<ul>
+				<li><a href="otpgen.html">Otp Generator</a></li>
+				<li>Password Cracker</li>
+				<li>Location Tracker</li>
+				<li>NID Call List</li>
+			</ul>
+		</section>
 		
-	<br><br>
-<div id="end">
-<p>You are logged in successfully.</p>
-    <button onclick="logout()">Logout</button>
-  <script>
-    function logout() {
-      localStorage.removeItem('token');
-      window.location.href = "index.html";
-    }
-  </script>
-	
-</div>
-<script src="./assets/js/main.js"></script>
-<script src="./assets/js/load-navbar.js"></script>
-</body>
+		<br><br>
+		<div id="end">
+			<p>You are logged in successfully.</p>
+			<button onclick="logout()">Logout</button>
+			<script>
+				function logout() {
+					localStorage.removeItem('token');
+					window.location.href = "index.html";
+				}
+			</script>
+		</div>
+
+		<script src="./assets/js/main.js"></script>
+		<script src="./assets/js/load-navbar.js"></script>
+	</body>
 </html>
