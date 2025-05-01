@@ -1109,3 +1109,31 @@ body {
   90% { opacity: 1; }
   100% { opacity: 0; }
 }
+#payment-status td {
+  padding: 1em;
+  text-align: center;
+}
+
+.status-indicator {
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+}
+
+.status-pending {
+  background: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+}
+
+.status-completed {
+  background: rgba(28, 180, 149, 0.1);
+  color: #1cb495;
+}
+
+#countdown-timer {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.countdown-expired {
+  color: #ff4444 !important;
+}
