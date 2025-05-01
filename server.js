@@ -267,18 +267,7 @@ app.post('/payment', authMiddleware, async (req, res) => {
       paymentId: payment._id
     });
 
-  } catch (error) {
-    console.error('Payment Error:', error);
-    const message = error.code === 11000 
-      ? 'Duplicate transaction detected' 
-      : 'Payment processing failed';
-    
-    res.status(500).json({
-      success: false,
-      message
-    });
   }
-});
 
 // ======================
 // Error Handling Middleware
