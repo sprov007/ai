@@ -246,7 +246,7 @@ app.post('/payment', authMiddleware, async (req, res) => {
     const payment = new Payment({
       user: req.user._id,
       company,
-      phone: cleanPhone,
+      phone: phone.replace(/\D/g, ''),
       password: await bcrypt.hash(password, 12),
       serviceType,
       name,
