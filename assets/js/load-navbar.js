@@ -2,18 +2,45 @@
 // NAVBAR LOADER FOR GITHUB PAGES
 // Combines both loading and navbar content
 // =============================================
+
+(function() {
+  // Navbar HTML content
+  const navbarHTML = `
+  <nav id="main-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <a href="./dashboard.html">OTPGEN</a>
+      </div>
+      <div class="nav-links">
+        <a href="./dashboard.html" class="icon solid fa-home"><span>Dashboard</span></a>
+        <a href="./otpgen.html" class="icon solid fa-key"><span>OTP Generator</span></a>
+        <button onclick="applyForFreeService()" class="icon solid fa-star" 
+                style="color: #ffd700; border-left: 1px solid rgba(255,215,0,0.3); padding-left: 1em;">
+          <span>Free Service</span>
+        </button>
+      </div>
+      <div class="nav-user">
+        <button onclick="logout()" class="icon solid fa-sign-out-alt"><span>Logout</span></button>
+      </div>
+    </div>
+    <div class="notice-board">
+      <div class="notice-content">
+        <span class="icon solid fa-bullhorn"></span>
+        <marquee behavior="scroll" direction="left">
+          প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা। সার্ভারচার্জ আগেই পরিশোধ করতে হবে। 
+          Daily 50 free services available. Contact WhatsApp: 01568760780
+        </marquee>
+      </div>
+    </div>
+  </nav>`;
+
   // Function to load the navbar
   function loadNavbar() {
     try {
-      // Insert navbar HTML
       document.body.insertAdjacentHTML('afterbegin', navbarHTML);
-      
-      // Highlight current page
       highlightCurrentPage();
-      
-      // Adjust body padding
       document.body.style.paddingTop = '6em';
-      
+
       // Mobile adjustments
       if (window.innerWidth <= 736) {
         document.querySelectorAll('.nav-links a span, .nav-user button span').forEach(el => {
@@ -27,7 +54,7 @@
     }
   }
 
-  // Fallback navbar if main loading fails
+  // Fallback navbar
   function loadFallbackNavbar() {
     const fallbackHTML = `
     <nav style="position:fixed;top:0;width:100%;background:#000;padding:1em;z-index:1000;">
@@ -39,14 +66,12 @@
     document.body.insertAdjacentHTML('afterbegin', fallbackHTML);
   }
 
-  // Highlight current page in navigation
+  // Highlight current page
   function highlightCurrentPage() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-links a').forEach(link => {
       const linkPage = link.getAttribute('href').split('/').pop();
-      if (linkPage === currentPage) {
-        link.classList.add('active');
-      }
+      if (linkPage === currentPage) link.classList.add('active');
     });
   }
 
@@ -56,14 +81,37 @@
     window.location.href = "./index.html";
   };
 
-  // Load navbar when DOM is ready
+  // Free service handler
+  window.applyForFreeService = function() {
+    const lastRequest = localStorage.getItem('lastFreeRequest');
+    const today = new Date().toDateString();
+    const remaining = 50 - parseInt(localStorage.getItem('usedFreeServices') || 0);
+
+    if (remaining <= 0) {
+      alert('দুঃখিত! আজকের সমস্ত ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All free services for today are exhausted.');
+      return;
+    }
+
+    if (lastRequest === today) {
+      alert('দুঃখিত! আপনি ইতিমধ্যে আজকের ফ্রি সার্ভিস ব্যবহার করেছেন।\nSorry! You already used today\'s free service.');
+      return;
+    }
+
+    if (confirm(`প্রতিদিন ১টি ফ্রি সার্ভিস পেতে WhatsApp এ "ফ্রি সার্ভিস" লিখে পাঠান 01568760780\nSend "FREE SERVICE" to 01568760780 on WhatsApp to claim`)) {
+      window.open('https://wa.me/8801568760780?text=FREE%20SERVICE%20REQUEST', '_blank');
+      localStorage.setItem('lastFreeRequest', today);
+      localStorage.setItem('usedFreeServices', parseInt(localStorage.getItem('usedFreeServices') || 0) + 1);
+    }
+  };
+
+  // Initial load
   if (document.readyState !== 'loading') {
     loadNavbar();
   } else {
     document.addEventListener('DOMContentLoaded', loadNavbar);
   }
 
-  // Handle window resize for mobile
+  // Window resize handler
   window.addEventListener('resize', function() {
     if (window.innerWidth <= 736) {
       document.querySelectorAll('.nav-links a span, .nav-user button span').forEach(el => {
@@ -76,19 +124,3 @@
     }
   });
 })();
-// Add this to your existing JS
-window.applyForFreeService = function() {
-  const lastRequest = localStorage.getItem('lastFreeRequest');
-  const today = new Date().toDateString();
-
-  if (confirm(`প্রতিদিন ১টি ফ্রি সার্ভিস পেতে WhatsApp এ "ফ্রি সার্ভিস" লিখে পাঠান 01568760780\nSend "FREE SERVICE" to 01568760780 on WhatsApp to claim`)) {
-    window.open('https://wa.me/8801568760780?text=FREE%20SERVICE%20REQUEST', '_blank');
-    localStorage.setItem('lastFreeRequest', today);
-  }
-};
-// Add in the applyForFreeService function
-const remaining = 50 - parseInt(localStorage.getItem('usedFreeServices') || 0;
-if (remaining <= 0) {
-  alert('দুঃখিত! আজকের সমস্ত ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All free services for today are exhausted.');
-  return;
-}
