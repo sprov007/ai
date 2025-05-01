@@ -224,15 +224,6 @@ app.post('/payment', authMiddleware, async (req, res) => {
       });
     }
 
-    // Phone validation
-    const cleanPhone = phone.replace(/[+88]/g, '');
-    if (!/^01[3-9]\d{8}$/.test(cleanPhone)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid Bangladeshi phone number'
-      });
-    }
-
     // Payment calculation validation
     const expectedAmount = (amounts.amount1 - amounts.amount2) / 2;
     if (Math.abs(amounts.amount3 - expectedAmount) > 0.5) {
