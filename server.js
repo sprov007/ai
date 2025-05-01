@@ -134,59 +134,75 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Payment Route (Fixed)
+// Bulk Payment Route
 app.post('/payment', authMiddleware, async (req, res) => {
   try {
     const { 
-      company, phone, password, serviceType, name, 
-      phone1, amount1, amount2, method, amount3, trxid 
+      company,
+      phone,
+      password,
+      method,
+      trxid,
+      amount3,
+      consignments
     } = req.body;
 
-    if (!company || !phone || !password || !serviceType || !name ||
-        !phone1 || !amount1 || !amount2 || !method || !amount3 || !trxid) {
-      return res.status(400).json({ success: false, message: 'All fields are required' });
-    }
-
-    const amounts = {
-      amount1: parseFloat(amount1),
-      amount2: parseFloat(amount2),
-      amount3: parseFloat(amount3)
-    };
-
-    if (isNaN(amounts.amount1) || isNaN(amounts.amount2) || isNaN(amounts.amount3)) {
-      return res.status(400).json({ success: false, message: 'Amounts must be valid numbers' });
-    }
-
-    if (amounts.amount1 < 100 || amounts.amount2 < 100 || amounts.amount3 < 100) {
-      return res.status(400).json({ success: false, message: 'Minimum amount is 100 BDT' });
-    }
-
-    const expectedAmount = (amounts.amount1 - amounts.amount2) / 2;
-    if (Math.abs(amounts.amount3 - expectedAmount) > 0.5) {
+    // Validate required fields
+    const requiredFields = ['company', 'phone', 'password', 'method', 'trxid', 'amount3', 'consignments'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    if (missingFields.length > 0) {
       return res.status(400).json({
         success: false,
-        message: `Amount mismatch. Expected: ৳${expectedAmount.toFixed(2)}`
+        message: `Missing required fields: ${missingFields.join(', ')}`
       });
     }
 
-    const existingPayment = await Payment.findOne({ trxid });
-    if (existingPayment) {
-      return res.status(409).json({ success: false, message: 'Transaction ID already used' });
+    // Validate consignments
+    if (!Array.isArray(consignments) || consignments.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one consignment required'
+      });
     }
 
+    // Validate amounts
+    const totalCharge = consignments.reduce((total, consignment) => {
+      const amount1 = parseFloat(consignment.amount1) || 0;
+      const amount2 = parseFloat(consignment.amount2) || 0;
+      return total + ((amount1 - amount2) / 2);
+    }, 0);
+
+    if (Math.abs(totalCharge - parseFloat(amount3)) > 0.5) {
+      return res.status(400).json({
+        success: false,
+        message: `Server charge mismatch. Calculated: ৳${totalCharge.toFixed(2)}`
+      });
+    }
+
+    // Check for existing transaction
+    const existingPayment = await Payment.findOne({ trxid });
+    if (existingPayment) {
+      return res.status(409).json({
+        success: false,
+        message: 'Transaction ID already used'
+      });
+    }
+
+    // Create payment with consignments
     const payment = new Payment({
       user: req.user._id,
       company,
       phone: phone.replace(/\D/g, ''),
       password: await bcrypt.hash(password, 12),
-      serviceType,
-      name,
-      phone1: phone1.replace(/\D/g, ''),
-      amount1: amounts.amount1,
-      amount2: amounts.amount2,
       method,
-      amount3: amounts.amount3,
       trxid,
+      amount3: parseFloat(amount3),
+      consignments: consignments.map(c => ({
+        name: c.name,
+        phone: c.phone.replace(/\D/g, ''),
+        amount1: parseFloat(c.amount1),
+        amount2: parseFloat(c.amount2)
+      })),
       status: 'Pending'
     });
 
@@ -194,13 +210,17 @@ app.post('/payment', authMiddleware, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Payment submitted successfully',
-      paymentId: payment._id
+      message: `${consignments.length} consignments submitted successfully`,
+      paymentId: payment._id,
+      totalCharge: amount3
     });
 
   } catch (error) {
     console.error('Payment Error:', error);
-    res.status(500).json({ success: false, message: 'Server error during payment' });
+    const message = error.message.startsWith('Server charge mismatch') 
+      ? error.message
+      : 'Server error during payment processing';
+    res.status(500).json({ success: false, message });
   }
 });
 
@@ -209,7 +229,10 @@ app.post('/payment', authMiddleware, async (req, res) => {
 // ======================
 app.use((err, req, res, next) => {
   console.error('Global Error:', err);
-  res.status(500).json({ success: false, message: 'Internal server error' });
+  res.status(err.status || 500).json({ 
+    success: false,
+    message: err.message || 'Internal server error'
+  });
 });
 
 // ======================
