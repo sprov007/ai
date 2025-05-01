@@ -97,7 +97,7 @@
     const remaining = 2 - used;
 
     if (remaining <= 0) {
-      alert('দুঃখিত! আজকের ২টি ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All 2 free services for today are used.');
+      alert('দুঃখিত! আজকের সকল ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All 2 free services for today are used.');
       return;
     }
 
