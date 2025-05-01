@@ -1038,3 +1038,20 @@ body {
   color: #1cb495;
   border-bottom: 2px solid #1cb495;
 }
+/* Add to navbar styles */
+.nav-links button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-links button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fa-star {
+  color: #ffd700 !important;
+}
