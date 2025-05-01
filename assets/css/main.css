@@ -1073,3 +1073,14 @@ body {
   cursor: not-allowed;
   pointer-events: none;
 }
+/* Add to main.css */
+.remove-consignment {
+  color: #ff4444 !important;
+  cursor: pointer;
+  border-bottom: none !important;
+  margin-left: 1em;
+}
+
+.remove-consignment:hover {
+  color: #ff6666 !important;
+}
