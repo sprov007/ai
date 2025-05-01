@@ -1,113 +1,119 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   
-	<title>ai login</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="./assets/css/main.css">
+    <title>AI Login</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="./assets/css/main.css">
 </head>
 <body class="is-preload">
-<!-- Header -->
-			<header id="header">
-				<h1>Welcome To One1 AI</h1>
-				<p>Artificial Intelligence at your doorstep.Success is our only goal.Brought to you by <a href="">One1ai</a>.</p>
-			</header>
+    <!-- Header -->
+    <header id="header">
+        <h1>Welcome To One1 AI</h1>
+        <p>Artificial Intelligence at your doorstep. Success is our only goal. Brought to you by <a href="">One1ai</a>.</p>
+    </header>
 
-<h2>Login</h2>
-<form id="loginForm">
-  <input type="email" id="loginEmail" placeholder="Email" required />
-  <input type="password" id="loginPassword" placeholder="Password" required />
-  <button type="submit">Login Now</button>
-</form>
-<script>
-  // Token validation on page load
-  document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
-    const tokenExp = localStorage.getItem('token_exp');
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="submit">Login Now</button>
+    </form>
+    <div id="loginMessage"></div>
 
-    // Check token existence and expiration
-    if (!token || !tokenExp || Date.now() > parseInt(tokenExp)) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('token_exp');
-      return;
-    }
+    <button onclick="goToDashboard()">Go to Dashboard</button>
 
-    try {
-      const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
-        headers: {
-          'Authorization': `Bearer ${token}`
+    <script>
+        // Token validation on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            const tokenExp = localStorage.getItem('token_exp');
+
+            // Immediate redirect if invalid credentials
+            if (!token || !tokenExp || Date.now() > parseInt(tokenExp)) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Invalid token');
+                
+                // If valid token ➔ redirect to dashboard
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const messageElement = document.getElementById('loginMessage');
+            messageElement.innerText = '';
+
+            try {
+                const response = await fetch('https://otpgen-84pg.onrender.com/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('loginEmail').value,
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    messageElement.innerText = data.message || 'Login failed';
+                    return;
+                }
+
+                // Store server-provided expiration
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('token_exp', data.expiresAt);
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                messageElement.innerText = 'Network error. Please try again.';
+            }
+        });
+
+        async function goToDashboard() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login first!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    const result = await response.json();
+                    alert(result.message || 'Access denied!');
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                alert('Connection error. Please try again.');
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
         }
-      });
-
-      if (!response.ok) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('token_exp');
-      }
-    } catch (error) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('token_exp');
-    }
-  });
-
-  // Login form handler
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    try {
-      const response = await fetch('https://otpgen-84pg.onrender.com/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Save token and expiration
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('token_exp', Date.now() + 3600000); // 1 hour
-        window.location.href = 'dashboard.html';
-      } else {
-        document.getElementById('loginMessage').innerText = result.message;
-      }
-    } catch (error) {
-      document.getElementById('loginMessage').innerText = 'Network error. Please try again.';
-    }
-  });
-</script>
-
-
-<button onclick="goToDashboard()">Go to Dashboard</button>
-
-<script>
-async function goToDashboard() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Please login first!');
-    return;
-  }
-
-  const response = await fetch('https://otpgen-84pg.onrender.com/dashboard', {
-    method: 'GET',
-    headers: {
-      'Authorization': token
-    }
-  });
-
-  if (response.ok) {
-    // If the token is valid ➔ redirect to dashboard.html
-    window.location.href = "dashboard.html";
-  } else {
-    const result = await response.json();
-    alert(result.message || 'Access denied!');
-  }
-}
-</script>
-<script src="./assets/js/main.js"></script>
+    </script>
+    
+    <script src="./assets/js/main.js"></script>
 </body>
 </html>
