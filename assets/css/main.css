@@ -942,7 +942,6 @@ input[type="tel"] {
   position: relative;
   z-index: 2;
 }
-/*navbar styles*/
 /* Navigation Styles */
 #main-nav {
   position: fixed;
@@ -955,11 +954,27 @@ input[type="tel"] {
   border-bottom: 1px solid rgba(28, 180, 149, 0.3);
 }
 
+.notice-board {
+  position: fixed;
+  top: 3.6em; /* Height of main nav */
+  width: 100%;
+  background-color: rgba(28, 180, 149, 0.1);
+  padding: 0.5em 1em;
+  border-top: 1px solid rgba(28, 180, 149, 0.2);
+  z-index: 999;
+}
+
+/* Body padding accounting for both nav and notice board */
+body {
+  padding-top: 8em !important; /* 3.6em (nav) + 2.4em (notice) + 2em buffer */
+}
+
 .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.8em 2em;
+  height: 3.6em;
 }
 
 .nav-brand a {
@@ -967,91 +982,94 @@ input[type="tel"] {
   font-weight: 700;
   font-size: 1.5em;
   text-decoration: none;
-  border-bottom: none;
+  display: flex;
+  align-items: center;
 }
 
 .nav-links {
   display: flex;
   gap: 1.5em;
+  align-items: center;
 }
 
-.nav-links a, .nav-user button {
+.nav-links a, 
+.nav-user button,
+.nav-links button {
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 0.5em;
-  border-bottom: none;
   transition: color 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.nav-links a:hover, .nav-user button:hover {
+.nav-links a:hover, 
+.nav-user button:hover,
+.nav-links button:hover {
   color: #1cb495;
-}
-
-.nav-links a span, .nav-user button span {
-  font-size: 0.9em;
-}
-
-.notice-board {
-  background-color: rgba(28, 180, 149, 0.1);
-  padding: 0.5em 1em;
-  border-top: 1px solid rgba(28, 180, 149, 0.2);
-}
-
-.notice-content {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9em;
-}
-
-.notice-content .icon {
-  color: #1cb495;
-}
-
-marquee {
-  flex-grow: 1;
-}
-
-/* Adjust body padding to account for fixed nav */
-body {
-  padding-top: 6em !important;
-}
-
-@media screen and (max-width: 736px) {
-  .nav-container {
-    padding: 0.8em 1em;
-  }
-  
-  .nav-links a span, .nav-user button span {
-    display: none;
-  }
-  
-  body {
-    padding-top: 5em !important;
-  }
 }
 
 .nav-links a.active {
   color: #1cb495;
   border-bottom: 2px solid #1cb495;
 }
-/* Add to navbar styles */
-.nav-links button {
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
+
+/* Notice Board Styles */
+.notice-content {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9em;
+  height: 2.4em;
 }
 
+.notice-content .icon {
+  color: #1cb495;
+  flex-shrink: 0;
+}
+
+/* Free Service Button */
+.nav-links button.fa-star {
+  color: #ffd700 !important;
+  border-left: 1px solid rgba(255,215,0,0.3);
+  padding-left: 1em;
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 736px) {
+  .nav-container {
+    padding: 0.8em 1em;
+  }
+  
+  .nav-links a span, 
+  .nav-user button span,
+  .nav-links button span {
+    display: none;
+  }
+  
+  body {
+    padding-top: 6em !important; /* Reduced for mobile */
+  }
+  
+  .notice-board {
+    top: 3em;
+    padding: 0.3em 0.5em;
+  }
+  
+  .notice-content {
+    font-size: 0.8em;
+    height: 2em;
+  }
+}
+
+/* Disabled State */
 .nav-links button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.fa-star {
-  color: #ffd700 !important;
+  pointer-events: none;
 }
