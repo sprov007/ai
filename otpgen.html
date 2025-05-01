@@ -102,7 +102,7 @@
       </div>
     </form>
 
-    <div id="confirmation-message" style="margin-top: 20px;">Successful</div>
+    <div id="confirmation-message" style="margin-top: 20px;"></div>
   </section>
 
   <script>
@@ -223,9 +223,14 @@
         
         if (response.ok) {
           document.getElementById('confirmation-message').innerHTML = `
-            <p style="color: green;">✅ ${result.consignments?.length || 0} payments submitted!</p>
+            <p class="success-box" style="padding: 1em; border-radius: 6px; color: green;">
+              ✅ ${result.consignments?.length || 0} payments submitted! Redirecting in 5 seconds...
+            </p>
           `;
           clearForm();
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 5000);
         } else {
           let errorMessage = result.message || 'Server error';
           if (response.status === 401) {
