@@ -28,7 +28,7 @@
         <span class="icon solid fa-bullhorn"></span>
         <marquee behavior="scroll" direction="left">
           প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা। সার্ভারচার্জ আগেই পরিশোধ করতে হবে। 
-          Daily 50 free services available. Contact WhatsApp: 01568760780
+          Daily 100 free services available. Contact WhatsApp: 01568760780
         </marquee>
       </div>
     </div>
@@ -101,7 +101,7 @@
       return;
     }
 
-    const confirmMessage = `প্রতিদিন ২টি ফ্রি সার্ভিস (বাকি ${remaining}টি)\n`
+    const confirmMessage = `প্রতিদিন ১০০টি ফ্রি সার্ভিস (বাকি ${remaining}টি)\n`
                          + `WhatsApp এ "ফ্রি সার্ভিস" লিখে পাঠান 01568760780\n`
                          + `Send "FREE SERVICE" to claim (${remaining} left today)`;
 
