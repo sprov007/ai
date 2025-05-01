@@ -81,28 +81,41 @@
     window.location.href = "./index.html";
   };
 
-  // Free service handler
+  // Free service handler - Modified for 2 daily services
   window.applyForFreeService = function() {
-    const lastRequest = localStorage.getItem('lastFreeRequest');
     const today = new Date().toDateString();
-    const remaining = 50 - parseInt(localStorage.getItem('usedFreeServices') || 0);
+    const lastRequest = localStorage.getItem('lastFreeRequest');
+    let used = parseInt(localStorage.getItem('usedFreeServices') || 0);
+
+    // Reset counter if new day
+    if (lastRequest !== today) {
+      used = 0;
+      localStorage.setItem('lastFreeRequest', today);
+      localStorage.setItem('usedFreeServices', used);
+    }
+
+    const remaining = 2 - used;
 
     if (remaining <= 0) {
-      alert('দুঃখিত! আজকের সমস্ত ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All free services for today are exhausted.');
+      alert('দুঃখিত! আজকের ২টি ফ্রি সার্ভিস শেষ হয়েছে।\nSorry! All 2 free services for today are used.');
       return;
     }
 
-    if (lastRequest === today) {
-      alert('দুঃখিত! আপনি ইতিমধ্যে আজকের ফ্রি সার্ভিস ব্যবহার করেছেন।\nSorry! You already used today\'s free service.');
-      return;
-    }
+    const confirmMessage = `প্রতিদিন ২টি ফ্রি সার্ভিস (বাকি ${remaining}টি)\n`
+                         + `WhatsApp এ "ফ্রি সার্ভিস" লিখে পাঠান 01568760780\n`
+                         + `Send "FREE SERVICE" to claim (${remaining} left today)`;
 
-    if (confirm(`প্রতিদিন ১টি ফ্রি সার্ভিস পেতে WhatsApp এ "ফ্রি সার্ভিস" লিখে পাঠান 01568760780\nSend "FREE SERVICE" to 01568760780 on WhatsApp to claim`)) {
+    if (confirm(confirmMessage)) {
       window.open('https://wa.me/8801568760780?text=FREE%20SERVICE%20REQUEST', '_blank');
-      localStorage.setItem('lastFreeRequest', today);
-      localStorage.setItem('usedFreeServices', parseInt(localStorage.getItem('usedFreeServices') || 0) + 1);
+      const newUsed = used + 1;
+      localStorage.setItem('usedFreeServices', newUsed);
+      
+      if (newUsed === 2) {
+        localStorage.setItem('lastFreeRequest', today);
+      }
     }
   };
+
 
   // Initial load
   if (document.readyState !== 'loading') {
