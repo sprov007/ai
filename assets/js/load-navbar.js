@@ -2,44 +2,6 @@
 // NAVBAR LOADER FOR GITHUB PAGES
 // Combines both loading and navbar content
 // =============================================
-
-(function() {
-  // Navbar HTML content (embedded directly to avoid fetch issues)
-  const navbarHTML = `
-  <nav id="main-nav">
-    <div class="nav-container">
-      <div class="nav-brand">
-        <a href="./dashboard.html">OTPGEN</a>
-      </div>
-      <div class="nav-links">
-        <a href="./dashboard.html" class="icon solid fa-home"><span>Dashboard</span></a>
-        <a href="./otpgen.html" class="icon solid fa-key"><span>OTP Generator</span></a>
-      <!-- Inside the nav-links div -->
-<div class="nav-links">
-  <a href="./dashboard.html" class="icon solid fa-home"><span>Dashboard</span></a>
-  <a href="./otpgen.html" class="icon solid fa-key"><span>OTP Generator</span></a>
-  <button onclick="applyForFreeService()" class="icon solid fa-star" 
-          style="color: #ffd700; border-left: 1px solid rgba(255,215,0,0.3); padding-left: 1em;">
-    <span>Free Service</span>
-  </button>
-</div>
-      </div>
-      <div class="nav-user">
-        <button onclick="logout()" class="icon solid fa-sign-out-alt"><span>Logout</span></button>
-      </div>
-    </div>
-    <div class="notice-board">
-      <div class="notice-content">
-        <span class="icon solid fa-bullhorn"></span>
-        <marquee behavior="scroll" direction="left">
-          প্রতিটি এন আই ডি কার্ডের জন্য সর্বনিম্ন চার্জ ১০০০টাকা। সার্ভারচার্জ আগেই পরিশোধ করতে হবে। 
-          Daily 50 free services available. Contact WhatsApp: 01568760780
-        </marquee>
-      </div>
-    </div>
-  </nav>
-  `;
-
   // Function to load the navbar
   function loadNavbar() {
     try {
