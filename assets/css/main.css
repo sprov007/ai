@@ -1033,3 +1033,8 @@ body {
     padding-top: 5em !important;
   }
 }
+
+.nav-links a.active {
+  color: #1cb495;
+  border-bottom: 2px solid #1cb495;
+}
