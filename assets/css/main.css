@@ -1084,3 +1084,28 @@ body {
 .remove-consignment:hover {
   color: #ff6666 !important;
 }
+/* Add these styles */
+#payment-status td {
+  padding: 1em;
+  text-align: center;
+}
+
+#countdown-timer {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #1cb495;
+}
+
+.countdown-expired {
+  color: #ff4444 !important;
+}
+
+.success-box {
+  animation: fadeOut 5s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
