@@ -942,3 +942,94 @@ input[type="tel"] {
   position: relative;
   z-index: 2;
 }
+/*navbar styles*/
+/* Navigation Styles */
+#main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  border-bottom: 1px solid rgba(28, 180, 149, 0.3);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 2em;
+}
+
+.nav-brand a {
+  color: #1cb495;
+  font-weight: 700;
+  font-size: 1.5em;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5em;
+}
+
+.nav-links a, .nav-user button {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  border-bottom: none;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover, .nav-user button:hover {
+  color: #1cb495;
+}
+
+.nav-links a span, .nav-user button span {
+  font-size: 0.9em;
+}
+
+.notice-board {
+  background-color: rgba(28, 180, 149, 0.1);
+  padding: 0.5em 1em;
+  border-top: 1px solid rgba(28, 180, 149, 0.2);
+}
+
+.notice-content {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9em;
+}
+
+.notice-content .icon {
+  color: #1cb495;
+}
+
+marquee {
+  flex-grow: 1;
+}
+
+/* Adjust body padding to account for fixed nav */
+body {
+  padding-top: 6em !important;
+}
+
+@media screen and (max-width: 736px) {
+  .nav-container {
+    padding: 0.8em 1em;
+  }
+  
+  .nav-links a span, .nav-user button span {
+    display: none;
+  }
+  
+  body {
+    padding-top: 5em !important;
+  }
+}
